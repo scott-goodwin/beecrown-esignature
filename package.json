@@ -1,0 +1,15 @@
+{
+  "name": "beecrown-sla-signer",
+  "version": "1.0.0",
+  "description": "Beecrown Logistics SLA Signing Portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
