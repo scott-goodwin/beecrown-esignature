@@ -588,6 +588,23 @@
                 font-size: 0.85rem;
                 padding: 0.75rem;
             }
+
+            #thankYouPage {
+                padding: 2rem 1rem !important;
+            }
+
+            #thankYouPage h1 {
+                font-size: 1.5rem !important;
+            }
+
+            #thankYouPage p {
+                font-size: 0.95rem !important;
+            }
+
+            #thankYouPage svg {
+                width: 80px;
+                height: 80px;
+            }
         }
 
         /* Touch-friendly signature pad */
@@ -704,6 +721,41 @@
                     Continue to Agreement
                 </button>
             </form>
+        </div>
+
+        <!-- Thank You Page -->
+        <div id="thankYouPage" class="document-container" style="display: none; text-align: center; padding: 3rem 2rem;">
+            <div class="logo-container">
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; font-weight: bold; color: #6B2D8F; font-family: Arial, sans-serif; letter-spacing: -1px;">Beecrown</div>
+                    <div style="font-size: 20px; color: #8BC53F; font-weight: 600; margin-top: -8px;">LOGISTICS LTD</div>
+                    <div style="font-size: 11px; color: #6B2D8F; letter-spacing: 2px; margin-top: 2px;">THE POWER OF DELIVERY</div>
+                </div>
+            </div>
+
+            <div style="margin: 3rem 0;">
+                <svg width="100" height="100" viewBox="0 0 100 100" style="margin-bottom: 2rem;">
+                    <circle cx="50" cy="50" r="45" fill="#8BC53F" opacity="0.2"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#8BC53F" stroke-width="3"/>
+                    <path d="M 30 50 L 45 65 L 70 35" stroke="#8BC53F" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <h1 style="color: var(--beecrown-purple); margin-bottom: 1rem; font-size: 2rem;">Thank You!</h1>
+                <p style="font-size: 1.2rem; color: #333; margin-bottom: 0.5rem;">Your agreement has been submitted successfully.</p>
+                <p style="font-size: 1rem; color: #666; margin-bottom: 2rem;">Document ID: <strong id="submittedDocId"></strong></p>
+                
+                <div style="background: #f0f9ff; border: 2px solid #8BC53F; border-radius: 8px; padding: 1.5rem; margin: 2rem auto; max-width: 500px;">
+                    <p style="color: #333; margin: 0; font-size: 1rem; line-height: 1.8;">
+                        ✅ Your signed agreement has been received<br>
+                        📧 A confirmation email will be sent shortly<br>
+                        📄 A copy has been saved to our system
+                    </p>
+                </div>
+
+                <p style="font-size: 1rem; color: #666; margin-top: 2rem;">
+                    You can now safely close this tab.
+                </p>
+            </div>
         </div>
 
         <!-- Step 2: Document with Signature -->
@@ -1128,13 +1180,8 @@
                 // Send to webhook
                 await sendToWebhook(pdfBlob, signatureImage);
 
-                showStatus('Agreement submitted successfully! You will receive a confirmation email shortly.', 'success');
-                
-                setTimeout(() => {
-                    if (confirm('Agreement submitted successfully! Click OK to return to the start.')) {
-                        location.reload();
-                    }
-                }, 3000);
+                // Show thank you page
+                showThankYouPage();
 
             } catch (error) {
                 console.error('Submission error:', error);
@@ -1218,6 +1265,9 @@
             const documentId = `SLA-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
             console.log('Document ID:', documentId);
             
+            // Save document ID globally for thank you page
+            window.currentDocumentId = documentId;
+            
             // Prepare metadata (no PDF base64!)
             const metadata = {
                 documentId: documentId,
@@ -1296,6 +1346,25 @@
                 reader.onerror = reject;
                 reader.readAsDataURL(blob);
             });
+        }
+
+        function showThankYouPage() {
+            // Hide all other sections
+            document.getElementById('initialForm').style.display = 'none';
+            document.getElementById('documentContent').style.display = 'none';
+            document.getElementById('loadingIndicator').style.display = 'none';
+            
+            // Show thank you page
+            document.getElementById('thankYouPage').style.display = 'block';
+            
+            // Display document ID
+            const docId = document.getElementById('submittedDocId');
+            if (window.currentDocumentId) {
+                docId.textContent = window.currentDocumentId;
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
         }
 
         function showStatus(message, type) {
