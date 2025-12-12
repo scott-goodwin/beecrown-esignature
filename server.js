@@ -81,48 +81,83 @@ app.post('/api/webhook-proxy', upload.single('pdf'), async (req, res) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(postData)
-            }
+            },
+            followAllRedirects: true,
+            maxRedirects: 5
         };
 
-        const proxyRequest = httpModule.request(options, (proxyResponse) => {
-            console.log('n8n Response Status:', proxyResponse.statusCode);
-            
-            let responseData = '';
-            
-            proxyResponse.on('data', (chunk) => {
-                responseData += chunk;
-            });
-            
-            proxyResponse.on('end', () => {
-                console.log('n8n Response received, length:', responseData.length);
-                
-                let result;
-                try {
-                    result = JSON.parse(responseData);
-                } catch (e) {
-                    console.log('Response is not JSON, treating as success');
-                    result = { message: 'Success' };
+        const makeRequest = (requestUrl) => {
+            const reqUrl = new URL(requestUrl);
+            const reqIsHttps = reqUrl.protocol === 'https:';
+            const reqHttpModule = reqIsHttps ? https : http;
+
+            const reqOptions = {
+                hostname: reqUrl.hostname,
+                port: reqUrl.port || (reqIsHttps ? 443 : 80),
+                path: reqUrl.pathname + reqUrl.search,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': Buffer.byteLength(postData)
+                }
+            };
+
+            console.log('Making request to:', requestUrl);
+
+            const proxyRequest = reqHttpModule.request(reqOptions, (proxyResponse) => {
+                console.log('Response Status:', proxyResponse.statusCode);
+                console.log('Response Headers:', proxyResponse.headers);
+
+                // Handle redirects (307, 301, 302)
+                if (proxyResponse.statusCode >= 300 && proxyResponse.statusCode < 400 && proxyResponse.headers.location) {
+                    const redirectUrl = proxyResponse.headers.location.startsWith('http') 
+                        ? proxyResponse.headers.location 
+                        : `${reqUrl.protocol}//${reqUrl.host}${proxyResponse.headers.location}`;
+                    
+                    console.log('Following redirect to:', redirectUrl);
+                    makeRequest(redirectUrl);
+                    return;
                 }
                 
-                res.json({
-                    success: proxyResponse.statusCode >= 200 && proxyResponse.statusCode < 300,
-                    status: proxyResponse.statusCode,
-                    data: result
+                let responseData = '';
+                
+                proxyResponse.on('data', (chunk) => {
+                    responseData += chunk;
+                });
+                
+                proxyResponse.on('end', () => {
+                    console.log('Response received, length:', responseData.length);
+                    
+                    let result;
+                    try {
+                        result = JSON.parse(responseData);
+                    } catch (e) {
+                        console.log('Response is not JSON, treating as success');
+                        result = { message: 'Success' };
+                    }
+                    
+                    res.json({
+                        success: proxyResponse.statusCode >= 200 && proxyResponse.statusCode < 300,
+                        status: proxyResponse.statusCode,
+                        data: result
+                    });
                 });
             });
-        });
 
-        proxyRequest.on('error', (error) => {
-            console.error('Request to n8n failed:', error);
-            res.status(500).json({ 
-                success: false, 
-                error: error.message 
+            proxyRequest.on('error', (error) => {
+                console.error('Request failed:', error);
+                res.status(500).json({ 
+                    success: false, 
+                    error: error.message 
+                });
             });
-        });
 
-        // Send the data
-        proxyRequest.write(postData);
-        proxyRequest.end();
+            proxyRequest.write(postData);
+            proxyRequest.end();
+        };
+
+        // Start the request chain
+        makeRequest(webhookUrl);
 
     } catch (error) {
         console.error('Proxy error:', error);
