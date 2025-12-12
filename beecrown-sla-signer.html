@@ -385,7 +385,34 @@
         @media print {
             .signature-controls,
             .btn,
-            .config-section {
+            .config-section,
+            #submitBtn,
+            .signature-instruction {
+                display: none !important;
+            }
+            
+            .signature-pad {
+                border: 2px solid #000 !important;
+                page-break-inside: avoid;
+            }
+            
+            body {
+                background: white;
+            }
+            
+            .document-container {
+                box-shadow: none;
+            }
+        }
+
+        .pdf-generation {
+            .signature-controls,
+            .btn,
+            .config-section,
+            #submitBtn,
+            .signature-instruction,
+            .status-message,
+            .loading {
                 display: none !important;
             }
         }
@@ -421,14 +448,11 @@
         <!-- Step 1: Initial Information Form -->
         <div class="initial-form-container" id="initialForm">
             <div class="logo-container">
-                <svg width="300" height="100" viewBox="0 0 300 100">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#8BC53F" stroke-width="4"/>
-                    <path d="M 30 50 Q 50 20, 70 50 Q 50 80, 30 50" fill="#6B2D8F"/>
-                    <polygon points="45,25 55,25 50,15" fill="#6B2D8F"/>
-                    <text x="100" y="55" font-family="Arial" font-size="32" font-weight="bold" fill="#6B2D8F">Beecrown</text>
-                    <text x="100" y="75" font-family="Arial" font-size="16" fill="#8BC53F">LOGISTICS LTD</text>
-                    <text x="100" y="88" font-family="Arial" font-size="10" fill="#6B2D8F">THE POWER OF DELIVERY</text>
-                </svg>
+                <div style="text-align: center;">
+                    <div style="font-size: 48px; font-weight: bold; color: #6B2D8F; font-family: Arial, sans-serif; letter-spacing: -1px;">Beecrown</div>
+                    <div style="font-size: 20px; color: #8BC53F; font-weight: 600; margin-top: -8px;">LOGISTICS LTD</div>
+                    <div style="font-size: 11px; color: #6B2D8F; letter-spacing: 2px; margin-top: 2px;">THE POWER OF DELIVERY</div>
+                </div>
             </div>
 
             <h1>Service Level Agreement</h1>
@@ -463,14 +487,13 @@
         <!-- Step 2: Document with Signature -->
         <div class="document-container" id="documentContent">
             <div class="document-header">
-                <svg width="300" height="100" viewBox="0 0 300 100">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#8BC53F" stroke-width="4"/>
-                    <path d="M 30 50 Q 50 20, 70 50 Q 50 80, 30 50" fill="#6B2D8F"/>
-                    <polygon points="45,25 55,25 50,15" fill="#6B2D8F"/>
-                    <text x="100" y="55" font-family="Arial" font-size="32" font-weight="bold" fill="#6B2D8F">Beecrown</text>
-                    <text x="100" y="75" font-family="Arial" font-size="16" fill="#8BC53F">LOGISTICS LTD</text>
-                    <text x="100" y="88" font-family="Arial" font-size="10" fill="#6B2D8F">THE POWER OF DELIVERY</text>
-                </svg>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="display: inline-block; position: relative;">
+                        <div style="font-size: 48px; font-weight: bold; color: #6B2D8F; font-family: Arial, sans-serif; letter-spacing: -1px;">Beecrown</div>
+                        <div style="font-size: 20px; color: #8BC53F; font-weight: 600; margin-top: -8px;">LOGISTICS LTD</div>
+                        <div style="font-size: 11px; color: #6B2D8F; letter-spacing: 2px; margin-top: 2px;">THE POWER OF DELIVERY</div>
+                    </div>
+                </div>
 
                 <h1 class="document-title">Service Level Agreement – Sub-Contractors providing<br>services to Beecrown Logistics Ltd</h1>
             </div>
@@ -766,39 +789,70 @@
         }
 
         async function generatePDF() {
+            console.log('=== Generating PDF ===');
+            
             const { jsPDF } = window.jspdf;
             const documentElement = document.getElementById('documentContent');
             
-            const canvas = await html2canvas(documentElement, {
-                scale: 1.5, // Reduced from 2 for smaller file size
-                backgroundColor: '#ffffff',
-                logging: false,
-                windowHeight: documentElement.scrollHeight
+            // Hide elements that shouldn't be in PDF
+            const elementsToHide = [
+                document.getElementById('submitBtn'),
+                document.querySelector('.signature-controls'),
+                document.querySelector('.signature-instruction'),
+                document.getElementById('statusMessage'),
+                document.getElementById('loadingIndicator')
+            ];
+            
+            elementsToHide.forEach(el => {
+                if (el) el.style.display = 'none';
             });
+            
+            // Add a class to help with styling
+            documentElement.classList.add('pdf-generation');
+            
+            try {
+                const canvas = await html2canvas(documentElement, {
+                    scale: 1.5, // Good quality without being too large
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    windowHeight: documentElement.scrollHeight,
+                    useCORS: true, // Allow cross-origin images
+                    allowTaint: true
+                });
 
-            const imgData = canvas.toDataURL('image/jpeg', 0.85); // Use JPEG with 85% quality for compression
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+                const imgData = canvas.toDataURL('image/jpeg', 0.90); // High quality JPEG
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true
+                });
 
-            const imgWidth = 210;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
+                const imgWidth = 210;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
 
-            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-            heightLeft -= 297;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= 297;
-            }
 
-            return pdf.output('blob');
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= 297;
+                }
+
+                console.log('PDF generated successfully');
+                return pdf.output('blob');
+                
+            } finally {
+                // Restore hidden elements
+                elementsToHide.forEach(el => {
+                    if (el) el.style.display = '';
+                });
+                documentElement.classList.remove('pdf-generation');
+            }
         }
 
         async function sendToWebhook(pdfBlob, signatureImage) {
