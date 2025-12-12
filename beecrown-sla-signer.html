@@ -422,7 +422,12 @@
             .btn,
             .config-section,
             #submitBtn,
-            .signature-instruction {
+            .signature-instruction,
+            #signaturePad {
+                display: none !important;
+            }
+            
+            .signature-section h3 {
                 display: none !important;
             }
             
@@ -447,9 +452,150 @@
             #submitBtn,
             .signature-instruction,
             .status-message,
-            .loading {
+            .loading,
+            #signaturePad {
                 display: none !important;
             }
+            
+            .signature-section h3 {
+                display: none !important;
+            }
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .document-container {
+                margin: 1rem 0.5rem;
+                padding: 1rem;
+                border-radius: 8px;
+            }
+
+            .logo-container {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .logo-container div {
+                font-size: 32px !important;
+            }
+
+            .logo-container div:nth-child(2) {
+                font-size: 16px !important;
+            }
+
+            .logo-container div:nth-child(3) {
+                font-size: 9px !important;
+            }
+
+            h1, .document-title {
+                font-size: 1.3rem;
+                line-height: 1.4;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            .info-section {
+                padding: 1rem;
+            }
+
+            .info-table {
+                font-size: 0.9rem;
+            }
+
+            .content-section {
+                padding: 1rem;
+                font-size: 0.95rem;
+            }
+
+            .terms-list li {
+                font-size: 0.9rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .signature-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .sig-box {
+                width: 100%;
+                font-size: 0.9rem;
+            }
+
+            #signaturePad {
+                width: 100%;
+                height: 150px;
+                touch-action: none;
+            }
+
+            .btn {
+                padding: 0.875rem;
+                font-size: 1rem;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            table td, table th {
+                padding: 0.5rem;
+            }
+
+            .general-error {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+
+            .signature-section {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .document-container {
+                margin: 0.5rem;
+                padding: 0.75rem;
+            }
+
+            h1, .document-title {
+                font-size: 1.1rem;
+            }
+
+            .logo-container div {
+                font-size: 28px !important;
+            }
+
+            .terms-list li {
+                font-size: 0.85rem;
+            }
+
+            .sig-box {
+                font-size: 0.85rem;
+                padding: 0.75rem;
+            }
+        }
+
+        /* Touch-friendly signature pad */
+        #signaturePad {
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         @media (max-width: 768px) {
@@ -689,7 +835,7 @@
                 <div class="signature-controls">
                     <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
                 </div>
-                <canvas id="signaturePad" class="signature-pad" width="800" height="200"></canvas>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
 
                 <div class="signature-info">
                     <div class="sig-box">
@@ -859,6 +1005,31 @@
         function setupSignaturePad() {
             canvas = document.getElementById('signaturePad');
             ctx = canvas.getContext('2d');
+            
+            // Make canvas responsive
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                const containerWidth = container.offsetWidth;
+                
+                // Set canvas size based on container
+                if (window.innerWidth <= 768) {
+                    canvas.width = containerWidth - 32; // Account for padding
+                    canvas.height = 150;
+                } else {
+                    canvas.width = 800;
+                    canvas.height = 200;
+                }
+                
+                // Reset drawing styles after resize
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 2;
             ctx.lineCap = 'round';
@@ -870,7 +1041,7 @@
             canvas.addEventListener('mouseup', stopDrawing);
             canvas.addEventListener('mouseout', stopDrawing);
 
-            // Touch events
+            // Touch events for mobile
             canvas.addEventListener('touchstart', handleTouch);
             canvas.addEventListener('touchmove', handleTouch);
             canvas.addEventListener('touchend', stopDrawing);
@@ -908,13 +1079,21 @@
         }
 
         function handleTouch(e) {
-            e.preventDefault();
+            e.preventDefault(); // Prevent scrolling while drawing
             const touch = e.touches[0];
-            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
-                clientX: touch.clientX,
-                clientY: touch.clientY
-            });
-            canvas.dispatchEvent(mouseEvent);
+            const rect = canvas.getBoundingClientRect();
+            
+            if (e.type === 'touchstart') {
+                isDrawing = true;
+                hasSignature = true;
+                document.getElementById('submitBtn').disabled = false;
+                updateSignatureDisplay();
+                ctx.beginPath();
+                ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            } else if (e.type === 'touchmove' && isDrawing) {
+                ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                ctx.stroke();
+            }
         }
 
         function clearSignature() {
