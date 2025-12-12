@@ -796,13 +796,13 @@
             const documentElement = document.getElementById('documentContent');
             
             const canvas = await html2canvas(documentElement, {
-                scale: 2,
+                scale: 1.5, // Reduced from 2 for smaller file size
                 backgroundColor: '#ffffff',
                 logging: false,
                 windowHeight: documentElement.scrollHeight
             });
 
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/jpeg', 0.85); // Use JPEG with 85% quality for compression
             const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
@@ -814,13 +814,13 @@
             let heightLeft = imgHeight;
             let position = 0;
 
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= 297;
 
             while (heightLeft >= 0) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= 297;
             }
 
@@ -828,10 +828,13 @@
         }
 
         async function sendToWebhook(pdfBlob, signatureImage) {
-            const pdfBase64 = await blobToBase64(pdfBlob);
-            const documentId = `SLA-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+            console.log('=== Starting sendToWebhook ===');
             
-            const data = {
+            const documentId = `SLA-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+            console.log('Document ID:', documentId);
+            
+            // Prepare metadata (no PDF base64!)
+            const metadata = {
                 documentId: documentId,
                 documentType: 'Service Level Agreement - Beecrown Logistics',
                 supplierName: supplierData.name,
@@ -840,14 +843,10 @@
                 signatureDate: document.getElementById('signatureDate').textContent,
                 submittedAt: new Date().toISOString(),
                 signature: {
-                    image: signatureImage,
+                    image: signatureImage, // Keep signature as base64 (small)
                     timestamp: new Date().toISOString()
                 },
-                pdf: {
-                    filename: `${documentId}_Beecrown_SLA.pdf`,
-                    data: pdfBase64,
-                    mimeType: 'application/pdf'
-                },
+                pdfFilename: `${documentId}_Beecrown_SLA.pdf`,
                 companyInfo: {
                     name: 'Beecrown Logistics Ltd',
                     address: 'Hamill House, 112-116 Chorley New Road, Bolton, BL1 4DH',
@@ -855,30 +854,47 @@
                 }
             };
 
-            // Use the proxy endpoint on our own server (no CORS issues!)
-            const response = await fetch('/api/webhook-proxy', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    webhookUrl: config.webhookUrl,
-                    data: data
-                })
-            });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || `Server returned status ${response.status}`);
-            }
-
-            const result = await response.json();
+            console.log('Metadata prepared, size:', JSON.stringify(metadata).length, 'bytes');
+            console.log('PDF blob size:', pdfBlob.size, 'bytes');
             
-            if (!result.success) {
-                throw new Error(result.error || 'Webhook request failed');
-            }
+            // Use FormData to send PDF as binary file
+            const formData = new FormData();
+            formData.append('metadata', JSON.stringify(metadata));
+            formData.append('pdf', pdfBlob, `${documentId}_Beecrown_SLA.pdf`);
+            formData.append('webhookUrl', config.webhookUrl);
 
-            return result.data;
+            console.log('Sending to proxy via FormData (binary PDF)...');
+
+            try {
+                const response = await fetch('/api/webhook-proxy', {
+                    method: 'POST',
+                    body: formData // No Content-Type header - browser sets it with boundary
+                });
+
+                console.log('Proxy response status:', response.status);
+
+                if (!response.ok) {
+                    const error = await response.json().catch(() => ({ error: `Status ${response.status}` }));
+                    console.error('Proxy returned error:', error);
+                    throw new Error(error.error || `Server returned status ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Proxy response:', result);
+                
+                if (!result.success) {
+                    console.error('Webhook failed:', result.error);
+                    throw new Error(result.error || 'Webhook request failed');
+                }
+
+                console.log('=== Webhook successful! ===');
+                return result.data;
+                
+            } catch (error) {
+                console.error('=== Webhook error ===');
+                console.error('Error details:', error);
+                throw error;
+            }
         }
 
         function blobToBase64(blob) {
