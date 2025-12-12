@@ -629,44 +629,18 @@
     </div>
 
     <script>
-        // Configuration
+        // Configuration - HARDCODED WEBHOOK
         let canvas, ctx, isDrawing = false, hasSignature = false;
-        let config = { webhookUrl: '' };
+        let config = { 
+            webhookUrl: 'https://hosted-online-scott.com/webhook/bb55dfad-096d-4850-bbe2-196bde20ef73'
+        };
         let supplierData = {};
 
         // Initialize
         function init() {
-            loadConfig();
-            setupSignaturePad();
-        }
-
-        function loadConfig() {
-            const saved = localStorage.getItem('n8nConfig');
-            if (saved) {
-                config = JSON.parse(saved);
-                document.getElementById('webhookUrl').value = config.webhookUrl;
-                if (config.webhookUrl) {
-                    document.getElementById('configSection').style.display = 'none';
-                }
-            }
-        }
-
-        function saveConfig() {
-            const webhookUrl = document.getElementById('webhookUrl').value.trim();
-            if (!webhookUrl) {
-                alert('Please enter a webhook URL');
-                return;
-            }
-            try {
-                new URL(webhookUrl);
-            } catch (e) {
-                alert('Please enter a valid webhook URL');
-                return;
-            }
-            config = { webhookUrl };
-            localStorage.setItem('n8nConfig', JSON.stringify(config));
+            // Hide config section since webhook is hardcoded
             document.getElementById('configSection').style.display = 'none';
-            showStatus('Configuration saved successfully!', 'success');
+            setupSignaturePad();
         }
 
         function showDocument(e) {
