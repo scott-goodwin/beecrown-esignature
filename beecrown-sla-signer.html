@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beecrown Logistics - Service Level Agreement</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --beecrown-purple: #6B2D8F;
+            --beecrown-green: #8BC53F;
+            --primary: #2c3e50;
+            --text: #333;
+            --bg: #f5f5f5;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            padding: 0;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        /* Step 1: Initial Form */
+        .initial-form-container {
+            padding: 3rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-container img {
+            max-width: 300px;
+            height: auto;
+        }
+
+        .initial-form-container h1 {
+            color: var(--beecrown-purple);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .initial-form-container p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--beecrown-purple);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--beecrown-purple);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a2578;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 45, 143, 0.3);
+        }
+
+        .btn-success {
+            background: var(--beecrown-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #7ab335;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 197, 63, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Step 2: Document View */
+        .document-container {
+            display: none;
+            padding: 3rem;
+            background: white;
+        }
+
+        .document-container.active {
+            display: block;
+        }
+
+        .document-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--beecrown-purple);
+        }
+
+        .document-header img {
+            max-width: 300px;
+            margin-bottom: 1rem;
+        }
+
+        .document-title {
+            font-size: 1.5rem;
+            color: var(--beecrown-purple);
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            border: 2px solid #000;
+        }
+
+        .info-table td {
+            padding: 0.75rem;
+            border: 1px solid #000;
+        }
+
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+            background: #f0f0f0;
+        }
+
+        .filled-info {
+            color: var(--beecrown-purple);
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 2rem 0 1rem 0;
+            color: var(--primary);
+        }
+
+        .terms-list {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .terms-list li {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .declaration-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-left: 4px solid var(--beecrown-purple);
+            margin: 2rem 0;
+            font-weight: 500;
+        }
+
+        .signature-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #ddd;
+        }
+
+        .signature-section h3 {
+            color: var(--beecrown-purple);
+            margin-bottom: 1rem;
+        }
+
+        .signature-instruction {
+            background: #fff3cd;
+            padding: 1rem;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .signature-pad {
+            border: 3px solid var(--beecrown-purple);
+            border-radius: 4px;
+            cursor: crosshair;
+            display: block;
+            margin: 1rem 0;
+            background: #fafafa;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .signature-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .signature-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .sig-box {
+            padding: 1rem;
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        .sig-box strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .company-signature {
+            text-align: center;
+        }
+
+        .company-signature img {
+            max-width: 150px;
+            margin: 1rem 0;
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-message.success {
+            background: rgba(139, 197, 63, 0.1);
+            border: 2px solid var(--beecrown-green);
+            color: #4a7c1f;
+        }
+
+        .status-message.error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 2px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 4px solid rgba(107, 45, 143, 0.3);
+            border-top: 4px solid var(--beecrown-purple);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .config-section {
+            background: var(--beecrown-purple);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem;
+        }
+
+        .config-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .config-section input {
+            background: white;
+            color: var(--text);
+        }
+
+        @media print {
+            .signature-controls,
+            .btn,
+            .config-section {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .initial-form-container,
+            .document-container {
+                padding: 1.5rem;
+            }
+
+            .signature-info {
+                grid-template-columns: 1fr;
+            }
+
+            .document-header img {
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Configuration Section -->
+    <div class="config-section" id="configSection">
+        <h2>n8n Webhook Configuration</h2>
+        <div class="form-group">
+            <label for="webhookUrl">n8n Webhook URL:</label>
+            <input type="url" id="webhookUrl" placeholder="https://your-n8n-instance.com/webhook/...">
+        </div>
+        <button class="btn btn-primary" onclick="saveConfig()">Save Configuration</button>
+    </div>
+
+    <div class="container">
+        <!-- Step 1: Initial Information Form -->
+        <div class="initial-form-container" id="initialForm">
+            <div class="logo-container">
+                <svg width="300" height="100" viewBox="0 0 300 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#8BC53F" stroke-width="4"/>
+                    <path d="M 30 50 Q 50 20, 70 50 Q 50 80, 30 50" fill="#6B2D8F"/>
+                    <polygon points="45,25 55,25 50,15" fill="#6B2D8F"/>
+                    <text x="100" y="55" font-family="Arial" font-size="32" font-weight="bold" fill="#6B2D8F">Beecrown</text>
+                    <text x="100" y="75" font-family="Arial" font-size="16" fill="#8BC53F">LOGISTICS LTD</text>
+                    <text x="100" y="88" font-family="Arial" font-size="10" fill="#6B2D8F">THE POWER OF DELIVERY</text>
+                </svg>
+            </div>
+
+            <h1>Service Level Agreement</h1>
+            <p>Sub-Contractors providing services to Beecrown Logistics Ltd</p>
+            <p style="font-size: 0.9rem; color: #666;">Please enter your details below to view and sign the agreement</p>
+
+            <form id="supplierForm" onsubmit="showDocument(event)">
+                <div class="form-group">
+                    <label for="supplierName">Full Name *</label>
+                    <input type="text" id="supplierName" name="supplierName" required 
+                           placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="supplierEmail">Email Address *</label>
+                    <input type="email" id="supplierEmail" name="supplierEmail" required
+                           placeholder="your.email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="supplierAddress">Full Address *</label>
+                    <textarea id="supplierAddress" name="supplierAddress" required
+                              placeholder="Street Address&#10;City, Postal Code&#10;Country"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Continue to Agreement
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: Document with Signature -->
+        <div class="document-container" id="documentContent">
+            <div class="document-header">
+                <svg width="300" height="100" viewBox="0 0 300 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#8BC53F" stroke-width="4"/>
+                    <path d="M 30 50 Q 50 20, 70 50 Q 50 80, 30 50" fill="#6B2D8F"/>
+                    <polygon points="45,25 55,25 50,15" fill="#6B2D8F"/>
+                    <text x="100" y="55" font-family="Arial" font-size="32" font-weight="bold" fill="#6B2D8F">Beecrown</text>
+                    <text x="100" y="75" font-family="Arial" font-size="16" fill="#8BC53F">LOGISTICS LTD</text>
+                    <text x="100" y="88" font-family="Arial" font-size="10" fill="#6B2D8F">THE POWER OF DELIVERY</text>
+                </svg>
+
+                <h1 class="document-title">Service Level Agreement – Sub-Contractors providing<br>services to Beecrown Logistics Ltd</h1>
+            </div>
+
+            <table class="info-table">
+                <tr>
+                    <td><strong>Company</strong></td>
+                    <td><strong>Address</strong></td>
+                </tr>
+                <tr>
+                    <td>Beecrown Logistics Ltd</td>
+                    <td>Hamill House, 112-116 Chorley New Road, Bolton, BL1 4DH</td>
+                </tr>
+            </table>
+
+            <p style="margin-bottom: 1rem;">(hereafter referred to as <strong>"the Company"</strong>)</p>
+            <p style="margin-bottom: 1rem;"><strong>And</strong></p>
+
+            <table class="info-table">
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Address</strong></td>
+                </tr>
+                <tr>
+                    <td><span class="filled-info" id="displayName"></span></td>
+                    <td><span class="filled-info" id="displayAddress"></span></td>
+                </tr>
+            </table>
+
+            <p style="margin-bottom: 2rem;">(Name & Address - hereafter referred to as <strong>"the Supplier"</strong>)</p>
+
+            <p style="margin-bottom: 1rem;"><strong>This Agreement is made on the date of the last signature below</strong></p>
+            <p style="margin-bottom: 1rem;"><strong>Between:</strong></p>
+
+            <ol class="terms-list">
+                <li>Beecrown Logistics LTD a company incorporated in England and Wales with registered number 11440403 whose registered office is at Hamill House 112 - 116 Chorley New Road Bolton, BL1 4DH, We can deduct money if the van is hired from us (Beecrown Logistics LTD) this amount will be agreed before we hire out the van to you on a separate van hire agreement which would detail the terms and conditions.</li>
+
+                <li>All expenses such as fuel etc are included within the agreed Day rate unless authorised by senior management.</li>
+
+                <li>You are to understand the requirements of drivers hour's regulations and will ensure that appropriate rest periods are taken.</li>
+
+                <li>The vehicles are your responsibility and, the vehicles must always be locked if unattended to and the keys must never be left in the ignition.</li>
+
+                <li>Anyone who wishes to leave and stop providing their services must provide a formal 2 weeks' notice. If this has not been adhered to then we hold the right to delay, hold or keep the drivers' payments to cover costs incurred to find replacement.</li>
+
+                <li>A 50% route deduction will be made to any driver that does not show up to work.</li>
+
+                <li>Payments vary for each respective depots and will be paid accordingly matching to the pay dates that will be provided.</li>
+
+                <li>If you wish to seek redress for any complaints relating to your assignment then you should notify your immediate supervisor in writing, specifying the grounds for your complaint. If your complaint relates to your immediate supervisor, then you can instead notify the Owner of the business. Further information can be found in the complaints Procedure.</li>
+
+                <li>We hold the right to terminate this contract at any time if you have committed any offence in relation to the following: breaking the law, fraud, and failure to comply with this contract and company policies.</li>
+
+                <li>Any Damages to Rental vans will be charged at the excess amount on the vehicle.</li>
+
+                <li>The terms of payment vary depending on the specific contract for which services are rendered, ranging from payment in arrears spanning 2, 3, or 4 weeks. These terms are subject to agreement by your respective senior manager.</li>
+
+                <li>All Parcels are the driver's responsibility, Any Parcels that are lost and/or stolen due to driver negligence will be chargeable to the individual drivers.</li>
+            </ol>
+
+            <h2 class="section-title">Hours of Work</h2>
+            <ol class="terms-list" start="13">
+                <li>Monies can be held for minimum 14 days or kept if there is damages, pcn's, accident or claims</li>
+
+                <li>You will be completing a route which can approximately take around 9 hours to complete however it could also be longer possibly around 10 hours depending on the area you are delivering in on the day</li>
+
+                <li>A mandatory rest period must be taken for 30 minutes during your route (this is an unpaid break)</li>
+
+                <li>You must provide reasonable service for additional hours to meet our business requirements without additional payment.</li>
+
+                <li>Monies can be held for minimum 14 days or kept if there is damages, pcn's, accident or claims</li>
+            </ol>
+
+            <p style="margin: 1.5rem 0;">All parcels must be delivered in accordance with the guidelines provided by the service partners. Any parcels that are not delivered within the rules and regulations may hold a fine and this will be charged to you. This includes scanners, delivering, parcels, damage, loss, theft and wrong/late deliveries.</p>
+
+            <p style="margin: 1.5rem 0;">All parcels scanned to the van are your responsibility until either delivered or returned to the depot for scan off. Whilst your responsibility, any stolen, damaged or missing parcels due to neglect will be charged back to you and payments held to cover any claim.</p>
+
+            <h2 class="section-title">Schedule 3 – Health & Safety and Security Requirements</h2>
+            <ol class="terms-list">
+                <li>The Supplier confirms that to provide the services safely and legally, they can meet the following before the commencement of the services (and agrees the Company can provide such information to its End-user client):
+                    <ol style="list-style-type: lower-alpha; margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>is eligible to work in a self-employed capacity in the United Kingdom (per Government best practice requirements) and has registered with HM Revenue & Customs as self-employed (and can provide evidence upon request);</li>
+                        <li>Is over 18 years of age;</li>
+                        <li>Can confirm current work status and reasons for leaving previous work for previous twenty-four (24) months</li>
+                        <li>passes a criminal background check, including but not limited to driving offences;</li>
+                        <li>Confirmation that in providing services to the company, The Supplier will not be in breach of any other regulatory requirement;</li>
+                        <li>Passes a Medical fitness for work check;</li>
+                        <li>Passes a drug and alcohol screening test;</li>
+                        <li>Holds a current and valid driving licence (either a UK licence or a European Community/European Economic Area (EC/EEA) license, but if the latter, they must hold a valid driving license counterpart for non-GB license holders (DELLA D9 form));</li>
+                        <li>Has had no major preventable collisions within the previous three years;</li>
+                        <li>Does not have more than 6 penalty points (endorsements) on their driving license;</li>
+                        <li>Has not committed more than 3 driving-related offences of any kind in the last 4 years;</li>
+                        <li>Does not currently have penalty points (endorsements) on their driving licence in relation to Offence Codes CD40, CD50, CD60, CD70, CD80, or CD90;</li>
+                        <li>Does not currently have penalty points (endorsements) on their driving licence in relation to Offence Codes DD40, DD60, DD80, DD90;</li>
+                        <li>Does not currently have penalty points (endorsements) on their driving licence in relation to Offence Codes DR10, DR20, DR30, DR40, DR50, DR60, DR70, DR80, DR90;</li>
+                        <li>Does not currently have penalty points (endorsements) on their driving license in relation to Offence Codes IN10, MS50, TT99, or UT50;</li>
+                        <li>Is not currently disqualified from driving (this includes having their license suspended);</li>
+                        <li>Does not have any unspent convictions on their criminal record (driving-related or other).</li>
+                        <li>Can speak fluent English, has a high level of written English skills, and passes appropriate numeracy tests.</li>
+                        <li>Confirmation of whether the Supplier has previously ceased providing services to the Company or its End-user client for any reasons of unsuitability</li>
+                    </ol>
+                </li>
+
+                <li>During the provision of the services, the Supplier agrees and consents that the Company may undertake ongoing checks at such intervals as it deems appropriate, with no further notice to the Supplier, of any or all of the conditions listed in Schedule 3 1(a) – (s) and may disclose this information to any End-user client the Supplier chooses to provide their services to.</li>
+            </ol>
+
+            <div class="declaration-box">
+                <strong>Declaration</strong><br><br>
+                I understand the terms and conditions of this position and will abide by all rules and regulations and the contract content any breach may lead to termination as stated above.
+            </div>
+
+            <div class="signature-section">
+                <h3>Contractor Signature</h3>
+                <div class="signature-instruction">
+                    ⚠️ <strong>Important:</strong> You must sign in the box below before you can submit this agreement. Use your mouse or touchscreen to draw your signature.
+                </div>
+                <div class="signature-controls">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad" width="800" height="200"></canvas>
+
+                <div class="signature-info">
+                    <div class="sig-box">
+                        <strong>I, the Independent Contractor, understand and accept in full the terms set out within this agreement.</strong>
+                        <p style="margin-top: 1rem;"><strong>Name:</strong> <span class="filled-info" id="signerName"></span></p>
+                        <p><strong>Date:</strong> <span id="signatureDate"></span></p>
+                        <p><strong>Position:</strong> Independent Contractor</p>
+                        <p><strong>Signature:</strong> As signed above</p>
+                    </div>
+
+                    <div class="sig-box company-signature">
+                        <strong>This agreement may only be varied by a document signed by Independent Contractor and Supplier</strong>
+                        <p style="margin-top: 1rem;"><strong>Name:</strong> Ghazalee Khan</p>
+                        <p><strong>Date:</strong> As Per Signed Contractor Date</p>
+                        <p><strong>Position:</strong> Director</p>
+                        <svg width="150" height="60" viewBox="0 0 150 60">
+                            <path d="M 10 40 Q 30 20, 50 35 Q 60 45, 70 35 Q 85 20, 100 40 Q 110 50, 130 35" 
+                                  stroke="#6B2D8F" stroke-width="3" fill="none"/>
+                        </svg>
+                        <p style="margin-top: 0.5rem;"><strong>Beecrown Logistics Ltd ("The Company")</strong></p>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-success" id="submitBtn" onclick="handleSubmit()" disabled>
+                    Submit Signed Agreement
+                </button>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>Processing your agreement...</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        let canvas, ctx, isDrawing = false, hasSignature = false;
+        let config = { webhookUrl: '' };
+        let supplierData = {};
+
+        // Initialize
+        function init() {
+            loadConfig();
+            setupSignaturePad();
+        }
+
+        function loadConfig() {
+            const saved = localStorage.getItem('n8nConfig');
+            if (saved) {
+                config = JSON.parse(saved);
+                document.getElementById('webhookUrl').value = config.webhookUrl;
+                if (config.webhookUrl) {
+                    document.getElementById('configSection').style.display = 'none';
+                }
+            }
+        }
+
+        function saveConfig() {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
+            if (!webhookUrl) {
+                alert('Please enter a webhook URL');
+                return;
+            }
+            try {
+                new URL(webhookUrl);
+            } catch (e) {
+                alert('Please enter a valid webhook URL');
+                return;
+            }
+            config = { webhookUrl };
+            localStorage.setItem('n8nConfig', JSON.stringify(config));
+            document.getElementById('configSection').style.display = 'none';
+            showStatus('Configuration saved successfully!', 'success');
+        }
+
+        function showDocument(e) {
+            e.preventDefault();
+
+            // Get form data
+            supplierData = {
+                name: document.getElementById('supplierName').value,
+                email: document.getElementById('supplierEmail').value,
+                address: document.getElementById('supplierAddress').value
+            };
+
+            // Fill in the document
+            document.getElementById('displayName').textContent = supplierData.name;
+            document.getElementById('displayAddress').textContent = supplierData.address;
+            document.getElementById('signerName').textContent = supplierData.name;
+            document.getElementById('signatureDate').textContent = new Date().toLocaleDateString('en-GB');
+
+            // Hide form, show document
+            document.getElementById('initialForm').style.display = 'none';
+            document.getElementById('documentContent').classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function setupSignaturePad() {
+            canvas = document.getElementById('signaturePad');
+            ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            hasSignature = true;
+            document.getElementById('submitBtn').disabled = false;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+
+        function clearSignature() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasSignature = false;
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        async function handleSubmit() {
+            if (!hasSignature) {
+                showStatus('Please sign the document before submitting', 'error');
+                return;
+            }
+
+            if (!config.webhookUrl) {
+                showStatus('Please configure the webhook URL first', 'error');
+                document.getElementById('configSection').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                // Generate PDF
+                const pdfBlob = await generatePDF();
+                
+                // Get signature as image
+                const signatureImage = canvas.toDataURL('image/png');
+                
+                // Send to webhook
+                await sendToWebhook(pdfBlob, signatureImage);
+
+                showStatus('Agreement submitted successfully! You will receive a confirmation email shortly.', 'success');
+                
+                setTimeout(() => {
+                    if (confirm('Agreement submitted successfully! Click OK to return to the start.')) {
+                        location.reload();
+                    }
+                }, 3000);
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                showStatus('Error submitting agreement: ' + error.message, 'error');
+                document.getElementById('submitBtn').disabled = false;
+            } finally {
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const documentElement = document.getElementById('documentContent');
+            
+            const canvas = await html2canvas(documentElement, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                windowHeight: documentElement.scrollHeight
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const imgWidth = 210;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= 297;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= 297;
+            }
+
+            return pdf.output('blob');
+        }
+
+        async function sendToWebhook(pdfBlob, signatureImage) {
+            const pdfBase64 = await blobToBase64(pdfBlob);
+            const documentId = `SLA-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+            
+            const data = {
+                documentId: documentId,
+                documentType: 'Service Level Agreement - Beecrown Logistics',
+                supplierName: supplierData.name,
+                supplierEmail: supplierData.email,
+                supplierAddress: supplierData.address,
+                signatureDate: document.getElementById('signatureDate').textContent,
+                submittedAt: new Date().toISOString(),
+                signature: {
+                    image: signatureImage,
+                    timestamp: new Date().toISOString()
+                },
+                pdf: {
+                    filename: `${documentId}_Beecrown_SLA.pdf`,
+                    data: pdfBase64,
+                    mimeType: 'application/pdf'
+                },
+                companyInfo: {
+                    name: 'Beecrown Logistics Ltd',
+                    address: 'Hamill House, 112-116 Chorley New Road, Bolton, BL1 4DH',
+                    registrationNumber: '11440403'
+                }
+            };
+
+            const response = await fetch(config.webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Webhook returned status ${response.status}`);
+            }
+
+            return response.json().catch(() => ({}));
+        }
+
+        function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type}`;
+            statusEl.style.display = 'block';
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
