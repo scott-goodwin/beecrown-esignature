@@ -1,192 +1,116 @@
 const express = require('express');
-const path = require('path');
-const https = require('https');
-const http = require('http');
+const fetch = require('node-fetch');
 const multer = require('multer');
+const FormData = require('form-data');
+const path = require('path');
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const upload = multer();
 
-// Configure multer for file uploads (in-memory)
-const storage = multer.memoryStorage();
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
-});
-
-// Parse JSON bodies for non-multipart requests
-app.use(express.json({ limit: '10mb' })); // Smaller now since PDF is separate
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-// Serve static files
+// Serve static files from current directory
 app.use(express.static(__dirname));
 
-// Main route - serve the SLA signer
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'beecrown-sla-signer.html'));
+// CORS middleware (just in case)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
 });
 
-// Proxy endpoint to forward to n8n webhook (handles binary PDF efficiently)
-app.post('/api/webhook-proxy', upload.single('pdf'), async (req, res) => {
-    console.log('=== Webhook Proxy Request Received ===');
-    
+// API endpoint to proxy to n8n
+app.post('/api/submit-document', upload.single('pdfFile'), async (req, res) => {
     try {
-        const webhookUrl = req.body.webhookUrl || process.env.N8N_WEBHOOK_URL;
-        const metadata = JSON.parse(req.body.metadata || '{}');
-        const pdfFile = req.file; // Binary PDF file
+        console.log('Received document submission:', {
+            documentType: req.body.documentType,
+            driverName: req.body.driverName,
+            hasFile: !!req.file
+        });
 
-        console.log('Webhook URL:', webhookUrl);
-        console.log('Metadata size:', JSON.stringify(metadata).length, 'bytes');
-        console.log('PDF file size:', pdfFile ? pdfFile.size : 0, 'bytes');
-
-        if (!webhookUrl) {
-            console.error('No webhook URL provided');
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Webhook URL not provided' 
+        // Create FormData for n8n webhook
+        const formData = new FormData();
+        
+        // Add all text fields
+        formData.append('documentType', req.body.documentType);
+        formData.append('driverName', req.body.driverName);
+        formData.append('driverReference', req.body.driverReference);
+        formData.append('email', req.body.email);
+        formData.append('signatureDate', req.body.signatureDate);
+        formData.append('filename', req.body.filename);
+        
+        // Add metadata
+        if (req.body.metadata) {
+            formData.append('metadata', req.body.metadata);
+        }
+        
+        // Add PDF file
+        if (req.file) {
+            formData.append('pdfFile', req.file.buffer, {
+                filename: req.body.filename,
+                contentType: 'application/pdf'
             });
         }
 
-        // Convert PDF to base64 for n8n
-        const pdfBase64 = pdfFile.buffer.toString('base64');
-        console.log('PDF converted to base64 for n8n');
-
-        // Combine metadata with PDF
-        const data = {
-            ...metadata,
-            pdf: {
-                filename: metadata.pdfFilename,
-                data: pdfBase64,
-                mimeType: 'application/pdf'
-            }
-        };
-
-        // Parse the webhook URL
-        const url = new URL(webhookUrl);
-        const isHttps = url.protocol === 'https:';
-        const httpModule = isHttps ? https : http;
-
-        console.log('Forwarding to n8n...');
-        console.log('Protocol:', url.protocol);
-        console.log('Host:', url.hostname);
-        console.log('Path:', url.pathname + url.search);
-
-        // Make request to n8n
-        const postData = JSON.stringify(data);
+        // Forward to n8n webhook
+        const n8nUrl = 'https://hosted-online-scott.com/webhook/bb55dfad-096d-4850-bbe2-196bde20ef73';
         
-        const options = {
-            hostname: url.hostname,
-            port: url.port || (isHttps ? 443 : 80),
-            path: url.pathname + url.search,
+        console.log('Forwarding to n8n webhook...');
+        
+        const response = await fetch(n8nUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(postData)
-            },
-            followAllRedirects: true,
-            maxRedirects: 5
-        };
+            body: formData,
+            headers: formData.getHeaders()
+        });
 
-        const makeRequest = (requestUrl) => {
-            const reqUrl = new URL(requestUrl);
-            const reqIsHttps = reqUrl.protocol === 'https:';
-            const reqHttpModule = reqIsHttps ? https : http;
+        const responseData = await response.text();
+        
+        console.log('n8n response:', {
+            status: response.status,
+            statusText: response.statusText,
+            data: responseData.substring(0, 200) // First 200 chars
+        });
 
-            const reqOptions = {
-                hostname: reqUrl.hostname,
-                port: reqUrl.port || (reqIsHttps ? 443 : 80),
-                path: reqUrl.pathname + reqUrl.search,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': Buffer.byteLength(postData)
-                }
-            };
+        if (!response.ok) {
+            throw new Error(`n8n webhook failed: ${response.status} ${response.statusText}`);
+        }
 
-            console.log('Making request to:', requestUrl);
-
-            const proxyRequest = reqHttpModule.request(reqOptions, (proxyResponse) => {
-                console.log('Response Status:', proxyResponse.statusCode);
-                console.log('Response Headers:', proxyResponse.headers);
-
-                // Handle redirects (307, 301, 302)
-                if (proxyResponse.statusCode >= 300 && proxyResponse.statusCode < 400 && proxyResponse.headers.location) {
-                    const redirectUrl = proxyResponse.headers.location.startsWith('http') 
-                        ? proxyResponse.headers.location 
-                        : `${reqUrl.protocol}//${reqUrl.host}${proxyResponse.headers.location}`;
-                    
-                    console.log('Following redirect to:', redirectUrl);
-                    makeRequest(redirectUrl);
-                    return;
-                }
-                
-                let responseData = '';
-                
-                proxyResponse.on('data', (chunk) => {
-                    responseData += chunk;
-                });
-                
-                proxyResponse.on('end', () => {
-                    console.log('Response received, length:', responseData.length);
-                    
-                    let result;
-                    try {
-                        result = JSON.parse(responseData);
-                    } catch (e) {
-                        console.log('Response is not JSON, treating as success');
-                        result = { message: 'Success' };
-                    }
-                    
-                    res.json({
-                        success: proxyResponse.statusCode >= 200 && proxyResponse.statusCode < 300,
-                        status: proxyResponse.statusCode,
-                        data: result
-                    });
-                });
-            });
-
-            proxyRequest.on('error', (error) => {
-                console.error('Request failed:', error);
-                res.status(500).json({ 
-                    success: false, 
-                    error: error.message 
-                });
-            });
-
-            proxyRequest.write(postData);
-            proxyRequest.end();
-        };
-
-        // Start the request chain
-        makeRequest(webhookUrl);
+        // Return success
+        res.json({
+            success: true,
+            message: 'Document submitted successfully',
+            n8nResponse: responseData
+        });
 
     } catch (error) {
-        console.error('Proxy error:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: error.message 
+        console.error('Error submitting document:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
         });
     }
 });
 
-// Health check
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', service: 'Beecrown SLA Signer' });
+// Serve index.html for root
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Handle 404
-app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'beecrown-sla-signer.html'));
+// Catch-all to serve HTML files
+app.get('*', (req, res) => {
+    const filePath = path.join(__dirname, req.path);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            res.status(404).send('Page not found');
+        }
+    });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`
-╔════════════════════════════════════════════════════╗
-║   Beecrown SLA Signer Server Running              ║
-╚════════════════════════════════════════════════════╝
-
-🌐 Server: http://localhost:${PORT}
-📱 Ready for production on Render
-🔄 Webhook proxy enabled at /api/webhook-proxy
-📦 Binary PDF upload supported (more efficient!)
-    `);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Frontend: http://localhost:${PORT}`);
+    console.log(`API: http://localhost:${PORT}/api/submit-document`);
 });
