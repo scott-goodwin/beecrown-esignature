@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Level Agreement - Step 2</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- SLA Document -->
+        <div class="document-container" id="slaDocument">
+            <div class="logo-container">
+                <div class="logo-text-main">Beecrown</div>
+                <div class="logo-text-sub">LOGISTICS LTD</div>
+                <div class="logo-text-tagline">THE POWER OF DELIVERY</div>
+            </div>
+
+            <h1 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 2rem;">Service Level Agreement</h1>
+
+            <div class="document-section">
+                <p><strong>Contractor Name:</strong> <span id="contractorName"></span></p>
+                <p><strong>Address:</strong><br><span id="contractorAddress"></span></p>
+                <p><strong>Driver Reference:</strong> <span id="contractorRef"></span></p>
+                <p><strong>Date:</strong> <span id="contractDate"></span></p>
+            </div>
+
+            <div class="document-section">
+                <h2>Agreement Terms</h2>
+                <p>This Service Level Agreement ("Agreement") is entered into between Beecrown Logistics Ltd ("the Company") and <span id="contractorName2"></span> ("the Contractor").</p>
+                
+                <h3>1. Service Provision</h3>
+                <p>The Contractor agrees to provide multi-drop delivery services in accordance with the Company's operational requirements and standards.</p>
+                
+                <h3>2. Obligations</h3>
+                <ul>
+                    <li>Maintain all required licenses and insurance</li>
+                    <li>Comply with all traffic laws and regulations</li>
+                    <li>Provide services in a professional manner</li>
+                    <li>Maintain vehicle to required standards</li>
+                    <li>Complete assigned routes efficiently</li>
+                </ul>
+
+                <h3>3. Remuneration</h3>
+                <p>The Contractor will be remunerated in accordance with the agreed service rates, paid on a weekly basis following invoice submission.</p>
+
+                <h3>4. Term and Termination</h3>
+                <p>This agreement may be terminated by either party with 7 days written notice.</p>
+            </div>
+
+            <div class="signature-boxes">
+                <div class="declaration-box">
+                    <h4>Contractor Declaration</h4>
+                    <p>I hereby agree to the terms and conditions set out in this Service Level Agreement.</p>
+                    <div class="declaration-field"><strong>Name:</strong> <span id="contractorName3"></span></div>
+                    <div class="declaration-field"><strong>Date:</strong> <span id="contractDate2"></span></div>
+                    <div class="declaration-field"><strong>Position:</strong> Multi-Drop Driver</div>
+                    <div class="signature-display" id="contractorSignatureDisplay">
+                        <div class="signature-label">Signature:</div>
+                    </div>
+                </div>
+
+                <div class="declaration-box">
+                    <h4>Company Declaration</h4>
+                    <p>Beecrown Logistics Ltd ("The Company") agrees to the terms and conditions set out in this Service Level Agreement.</p>
+                    <div class="declaration-field"><strong>Name:</strong> Ghazalee Khan</div>
+                    <div class="declaration-field"><strong>Date:</strong> As Per Signed Contractor Date</div>
+                    <div class="declaration-field"><strong>Position:</strong> Director</div>
+                    <div class="signature-display">
+                        <div class="signature-label">Signature:</div>
+                        <img id="directorSig" alt="Director Signature" style="max-width: 200px; margin-top: 0.5rem;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="signature-section">
+                <h3>Your Signature</h3>
+                <p class="signature-instruction">Please sign below using your mouse or touchscreen</p>
+                <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                Sign and Continue
+            </button>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Load driver data
+        const driverData = storage.load();
+        if (!driverData) {
+            window.location.href = 'index.html';
+        }
+
+        // Update progress
+        progress.update(2, 5);
+
+        // Populate document
+        const today = new Date().toLocaleDateString('en-GB');
+        document.getElementById('contractorName').textContent = driverData.fullName;
+        document.getElementById('contractorName2').textContent = driverData.fullName;
+        document.getElementById('contractorName3').textContent = driverData.fullName;
+        document.getElementById('contractorAddress').innerHTML = driverData.formattedAddress.replace(/\n/g, '<br>');
+        document.getElementById('contractorRef').textContent = driverData.driverReference;
+        document.getElementById('contractDate').textContent = today;
+        document.getElementById('contractDate2').textContent = today;
+        document.getElementById('directorSig').src = config.directorSignature;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Service Level Agreement...');
+
+            try {
+                // Update signature display
+                signaturePad.updateDisplay('contractorSignatureDisplay');
+
+                // Generate PDF
+                const pdfBlob = await pdf.generate('slaDocument');
+
+                // Submit to Monday.com
+                await api.submit('SLA', pdfBlob);
+
+                ui.hideLoading();
+
+                // Navigate to next step
+                navigation.goToStep(3);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+            }
+        });
+    </script>
+</body>
+</html>
