@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Privacy Notice - Step 4</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .privacy-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+            min-height: auto;
+            height: auto;
+            overflow: visible;
+        }
+        .privacy-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .privacy-document h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 15pt 0 8pt 0;
+        }
+        .privacy-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .privacy-document ul {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .privacy-document li {
+            margin: 4pt 0;
+            list-style-type: disc;
+        }
+        .privacy-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12pt 0;
+            font-size: 10pt;
+        }
+        .privacy-document table td,
+        .privacy-document table th {
+            padding: 6pt;
+            border: 1px solid #000;
+            text-align: left;
+            vertical-align: top;
+        }
+        .privacy-document table th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .privacy-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .privacy-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .privacy-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        /* Hide signature input section, submit button when generating PDF */
+        .privacy-document.pdf-generation .signature-section,
+        .pdf-generation .signature-section {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .privacy-document.pdf-generation #submitBtn,
+        .pdf-generation #submitBtn {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .privacy-document.pdf-generation button,
+        .pdf-generation button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .privacy-document.pdf-generation canvas#signaturePad,
+        .pdf-generation canvas#signaturePad {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        /* Ensure all content is visible in PDF */
+        .pdf-generation {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+        }
+        /* Ensure document container captures all content */
+        .privacy-document.pdf-generation {
+            display: block !important;
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Data Privacy Notice Document -->
+        <div class="document-container privacy-document" id="privacyDocument">
+            <h1>Data Privacy Notice</h1>
+
+            <p><strong>Data Protection Officer:</strong> ####</p>
+
+            <p>In accordance with General Data Protection Regulation (GDPR) Beecrown Logistics Ltd (the 'Company') collects and processes personal data relating to its contractors/subcontractors, service providers/suppliers/drivers to manage the provision of services relationship. The Company is committed to being transparent about how it collects and uses that data and to meeting its data protection obligations.</p>
+
+            <p>Under GDPR, all personal data obtained and held by us must be processed accordingly to set the core principles. In accordance with these principles, we ensure that:</p>
+
+            <h2>1. Data Protection Principles</h2>
+
+            <p>Under GDPR, all personal data obtained and held by us must be processed accordingly to set the core principles. In accordance with these principles, we ensure that:</p>
+
+            <ul>
+                <li>Processing is fair, lawful and transparent</li>
+                <li>Data is collected for specific, explicit, and legitimate purposes</li>
+                <li>Data collected is adequate, relevant and limited to what is necessary for the purpose of processing</li>
+                <li>Data is kept accurate and up to date. Data which is found to be inaccurate will be rectified or erased without delay,</li>
+                <li>Data is not kept for longer than necessary for its given purpose</li>
+                <li>Data is processed in a manner that ensures appropriate security of personal data including protection against unauthorised or unlawful processing, accidental loss, destruction, or damage by using appropriate technical or organisational measures</li>
+            </ul>
+
+            <p>We comply with the relevant GDPR procedures for international transferring of personal data.</p>
+
+            <h2>What Information Does the Company Collect?</h2>
+
+            <p>The Company collects and processes a range of information about you. This includes:</p>
+
+            <ul>
+                <li>Your name, address and contact details, including email address and telephone number, date of birth and gender.</li>
+                <li>Marital status, information of any disability you have or other medical information</li>
+                <li>Information on your race and religion for equality monitoring purposes</li>
+                <li>The terms and conditions of your service provision.</li>
+                <li>Details of your skills, experience and previous service provision, if applicable.</li>
+                <li>Details about your driving licence including eligibility to drive in the UK and existence of any endorsements or penalty points.</li>
+                <li>Information about your remuneration,</li>
+                <li>Details of your bank account and national insurance number.</li>
+                <li>Details about your taxation and VAT status in addition to your personal UTR.</li>
+                <li>Information about your nationality and entitlement to work in the UK.</li>
+                <li>Information about your criminal record.</li>
+                <li>Drug and alcohol test results</li>
+                <li>Details of your schedule of availability and services provided, including:
+                    <ul>
+                        <li>Service-related data and metrics</li>
+                        <li>Remuneration</li>
+                        <li>Service-related training records</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p>The Company may collect this information in a variety of ways. For example, data might be collected through your service application forms; obtained from your passport or other identity documents such as your driving licence; from forms completed by you at the start of or during your application to provide services; or from correspondence with you.</p>
+
+            <p>In some cases, the Company may collect personal data about you from third parties and information from criminal records checks permitted by law. All of which will be sought with your consent only.</p>
+
+            <p>In order to facilitate your remuneration, data will be stored in a range of different places, including in your payment reconciliation file, in the Companys IT systems (including the Companys email system) or passed to a nominated 3rd party payment provider to facilitate your payments.</p>
+
+            <h2>Why Does the Company Process Personal Data?</h2>
+
+            <p>The Company needs to process data to enter into a contract for services with you. For example, it needs to process your data to provide you with a contract of services and to remunerate you for the services you provide. In some cases, the Company needs to process data to ensure that it is complying with its legal obligations. For example, it is required to check a service provider's right to work in the UK and to comply with health and safety laws.</p>
+
+            <p>Where the Company processes other special categories of personal data, such as information about ethnic origin, sexual orientation or religion or belief, this is done for the purposes of equal opportunities monitoring. Data that the Company uses for these purposes is anonymised or is collected with your express consent, which can be withdrawn at any time. Service providers are entirely free to decide whether to provide such data and there are no consequences of failing to do so.</p>
+
+            <h2>Who Has Access to Data?</h2>
+
+            <p>Your information may be shared internally, including with members of the Beecrown Logistics Ltd management and and/or resource team (including payroll), your point of contact (POC) or account manager, at the location where you provide your services.</p>
+
+            <p>The Company shares your data with third parties in order to obtain pre-service provision references from other companies and obtain employment background checks from third party providers. The Company also shares your data with third parties that process data on its behalf, in connection with the recording of the services you have provided during any given period, to assist in the calculation of your remuneration in the general context of the services you provide. In those circumstances the data will be subject to confidentiality arrangements. The third parties concerned are as follows (3rd parties in this category must be listed below):</p>
+
+            <table>
+                <tr>
+                    <td>Beecrown Logistics Ltd</td>
+                    <td>EuroFin</td>
+                    <td>DVLA</td>
+                    <td>Amazon</td>
+                </tr>
+                <tr>
+                    <td>Accurate</td>
+                    <td>Insurance Companies</td>
+                    <td>Government Agencies</td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <p>The Company will not transfer your data to countries outside the European Economic Area.</p>
+
+            <h2>The Lawful Basis for Collecting Your Data</h2>
+
+            <p>The law on data protection allows us to process your data for certain reasons only. In the main, we process your data in order to comply with a legal requirement or in order to effectively manage the Service level Agreement (SLA) we have with you.</p>
+
+            <p>The information below categorises the types of data processing we undertake and the lawful basis we rely on.</p>
+
+            <table>
+                <tr>
+                    <th>Activity Requiring Your Data</th>
+                    <th>Lawful Basis</th>
+                </tr>
+                <tr>
+                    <td>Carry out the Service Level Agreement (SLA) that we have entered with you e.g. using your name, contact details, address history and information involving you (such as DBS/DVLA checks, drug and alcohol tests) to assess on going eligibility to provide services</td>
+                    <td>Performance of the SLA</td>
+                </tr>
+                <tr>
+                    <td>Ensuring you are remunerated correctly</td>
+                    <td>Performance of the SLA</td>
+                </tr>
+                <tr>
+                    <td>Carrying out checks in relation to your right to work in the U.K</td>
+                    <td>Legal obligation</td>
+                </tr>
+                <tr>
+                    <td>Making reasonable adjustments for disabled contractors</td>
+                    <td>Legal obligation</td>
+                </tr>
+                <tr>
+                    <td>Making decisions about remuneration rates</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Ensuring efficient administration of contractual benefits to you</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Effectively monitoring your application of your services in accordance with your SLA</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Maintaining comprehensive up to date records about you to ensure, amongst other things, effective correspondence can be archived and appropriate contact points in the event of an emergency are maintained</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Assessing training needs</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Dealing with legal claims made against us</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Preventing theft and/or fraud</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Ensuring our administrative and IT systems are secure and robust against unauthorised access</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+                <tr>
+                    <td>Sharing with third parties to support/assess your on-going services to us</td>
+                    <td>Our legitimate interests</td>
+                </tr>
+            </table>
+
+            <h2>How Does the Company Protect Data?</h2>
+
+            <p>The Company takes the security of your data seriously. It has internal policies and controls in place to try to ensure that your data is not lost, accidentally destroyed, misused or disclosed, and is not accessed except by its employees in the performance of their duties. All the Company's employees engaged in the processing of your data are provided with hierarchal and password protected access, depending on the extent of data they are required to have access to in connection with their specific roles.</p>
+
+            <p>Where the Company engages third parties to process personal data on its behalf, i.e. 3rd party payment providers accountancy firms, they do so on the basis of written instructions, are under a duty of confidentiality and are obliged to implement appropriate technical and Company measures to ensure the security of data.</p>
+
+            <h2>How Long Does the Company Keep Data?</h2>
+
+            <p>The Company will hold your personal data for the duration of your service provision. The periods for which your data is held after the end of your contract are set out as relevant retention periods (below).</p>
+
+            <table>
+                <tr>
+                    <th>Record</th>
+                    <th>Statutory Retention Period</th>
+                </tr>
+                <tr>
+                    <td>Remuneration rates (including incentives)</td>
+                    <td>6 Years</td>
+                </tr>
+                <tr>
+                    <td>Service hours</td>
+                    <td>2 years after they are made</td>
+                </tr>
+                <tr>
+                    <td>Assessments under health and safety regulations and records of consultations with safety representatives and committees</td>
+                    <td>Permanently</td>
+                </tr>
+                <tr>
+                    <td>HMRC approvals</td>
+                    <td>Permanently</td>
+                </tr>
+                <tr>
+                    <td>Driver files, training records (personal data, ID records, application forms, contract)</td>
+                    <td>6 years after end of service provision</td>
+                </tr>
+                <tr>
+                    <td>Driver drug and Alcohol test result</td>
+                    <td>6 years after end of service provision</td>
+                </tr>
+                <tr>
+                    <td>DBS checks</td>
+                    <td>6 years after end of service provision</td>
+                </tr>
+                <tr>
+                    <td>Performance data</td>
+                    <td>6 years after end of service provision</td>
+                </tr>
+                <tr>
+                    <td>Payment/invoicing and days worked records</td>
+                    <td>6 years after end of service provision</td>
+                </tr>
+                <tr>
+                    <td>Van hire records/ insurance documents</td>
+                    <td>6 years after end of service provision</td>
+                </tr>
+            </table>
+
+            <h2>Your Rights</h2>
+
+            <p>As a data subject, you have a number of rights. You can:</p>
+
+            <ul>
+                <li>access and obtain a copy of your data on request;</li>
+                <li>require the Company to change incorrect or incomplete data;</li>
+                <li>require the Company to delete or stop processing your data, for example where the data is no longer necessary for the purposes of processing; and</li>
+                <li>object to the processing of your data where the Company is relying on its legitimate interests as the legal ground for processing.</li>
+            </ul>
+
+            <p>If you would like to exercise any of these rights, please contact:</p>
+
+            <table>
+                <tr>
+                    <th>Data Protection Officer:</th>
+                    <td>####</td>
+                    <td>####</td>
+                </tr>
+            </table>
+
+            <p>If you believe that the Company has not complied with your data protection rights, you can complain to the Information Commissioner.</p>
+
+            <h2>What If You Do Not Provide Personal Data?</h2>
+
+            <p>You have some obligations under your SLA to provide the Company with data. In particular, you are required to provide details with regards to you right to work in the UK, your driving licence status and details relating to your self-employed status; i.e. UTR and VAT registration details.</p>
+
+            <p>Certain information, such as contact details, your right to work in the UK and payment details, have to be provided to enable the Company to enter a contract for services with you. If you do not provide other information, this will hinder the Companys ability to administer the rights and obligations arising as a result of the service relationship efficiently.</p>
+
+            <p>The law allows you to withdraw your consent to any particular usage of your data, at any time without needing to specify a reason.</p>
+
+            <p>You can withdraw your consent by emailing our Data Protection Officer on: ###</p>
+
+            <h2>Automated Decision-making</h2>
+
+            <p>Service provider eligibility decisions are not based solely on automated decision making.</p>
+
+            <p>I the undersigned, confirm that I have read over the Beecrown Logistics Ltd Supplier Privacy Notice and understand what personal information is held, used, shared by Beecrown Logistics Ltd in relation to me, and give my consent to such information being retained in this way. I understand that I may withdraw my consent to any particular usage of my information/data, at any time, without giving any reason.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Full Name:</th>
+                        <th>Date:</th>
+                        <th>Driver Signature:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="fullName"></td>
+                        <td id="signatureDate"></td>
+                        <td id="signatureArea" style="min-height: 50pt; vertical-align: top;">
+                            <!-- Signature will be inserted here -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table style="margin-top: 15pt;">
+                <thead>
+                    <tr>
+                        <th>Address:</th>
+                        <th>Town:</th>
+                        <th>Postcode:</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="address"></td>
+                        <td id="town"></td>
+                        <td id="postcode"></td>
+                        <td id="email"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(4, 7);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        // Construct full name from firstName and lastName
+        const fullName = driverData.firstName && driverData.lastName 
+            ? `${driverData.firstName} ${driverData.lastName}` 
+            : (driverData.fullName || '');
+        
+        // Construct full address from address components
+        const addressParts = [];
+        if (driverData.addressLine1) addressParts.push(driverData.addressLine1);
+        if (driverData.addressLine2) addressParts.push(driverData.addressLine2);
+        const fullAddress = addressParts.join(', ');
+        
+        document.getElementById('fullName').textContent = fullName;
+        document.getElementById('signatureDate').textContent = today;
+        document.getElementById('address').textContent = fullAddress || '';
+        document.getElementById('town').textContent = driverData.town || '';
+        document.getElementById('postcode').textContent = driverData.postcode || '';
+        document.getElementById('email').textContent = driverData.email || '';
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Data Privacy Notice...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '180pt';
+                sigImg.style.maxHeight = '50pt';
+                sigImg.style.display = 'block';
+                signatureArea.appendChild(sigImg);
+
+                // Ensure document is fully expanded before PDF generation
+                const documentElement = document.getElementById('privacyDocument');
+                documentElement.style.height = 'auto';
+                documentElement.style.maxHeight = 'none';
+                documentElement.style.overflow = 'visible';
+                documentElement.style.display = 'block';
+                
+                // Ensure parent container doesn't restrict height
+                if (documentElement.parentElement) {
+                    documentElement.parentElement.style.overflow = 'visible';
+                    documentElement.parentElement.style.height = 'auto';
+                }
+                
+                // Force multiple reflows to ensure all content is rendered
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll to bottom to ensure all content is loaded/rendered
+                window.scrollTo(0, documentElement.scrollHeight);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Force another reflow after scrolling
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll back to top for capture
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Final reflow
+                documentElement.offsetHeight;
+                
+                console.log('Step 4 - Document dimensions before PDF:', {
+                    scrollHeight: documentElement.scrollHeight,
+                    offsetHeight: documentElement.offsetHeight,
+                    clientHeight: documentElement.clientHeight,
+                    scrollWidth: documentElement.scrollWidth
+                });
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('privacyDocument');
+
+                // Submit to webhook
+                await api.submit('Data Privacy Notice', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to step 5 (Non-Disclosure) after a short delay
+                setTimeout(() => {
+                    navigation.goToStep(5);
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+

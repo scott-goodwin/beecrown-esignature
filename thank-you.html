@@ -3,37 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Onboarding Complete</title>
+    <title>Onboarding Complete - Beecrown Logistics</title>
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .thank-you-container {
+            text-align: center;
+            padding: 3rem 2rem;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 2rem auto;
+            animation: scaleIn 0.5s ease-out;
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .thank-you-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--beecrown-purple);
+            font-weight: bold;
+        }
+        .thank-you-subtitle {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        .completion-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid var(--beecrown-green);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .completion-item {
+            color: #333;
+            margin: 1rem 0;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: left;
+        }
+        .completion-item-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            min-width: 30px;
+        }
+        .footer-message {
+            color: #666;
+            margin-top: 3rem;
+            font-size: 1rem;
+        }
+        .logo-container {
+            margin-bottom: 2rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="document-container" style="text-align: center; padding: 3rem 2rem;">
+        <div class="document-container thank-you-container">
             <div class="logo-container">
                 <div class="logo-text-main">Beecrown</div>
                 <div class="logo-text-sub">LOGISTICS LTD</div>
                 <div class="logo-text-tagline">THE POWER OF DELIVERY</div>
             </div>
 
-            <svg width="100" height="100" viewBox="0 0 100 100" style="margin: 2rem auto;">
+            <svg class="success-icon" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="45" fill="#8BC53F" opacity="0.2"/>
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#8BC53F" stroke-width="3"/>
                 <path d="M 30 50 L 45 65 L 70 35" stroke="#8BC53F" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
 
-            <h1 style="font-size: 2rem; margin-bottom: 1rem; color: var(--beecrown-purple);">Onboarding Complete!</h1>
-            <p style="font-size: 1.2rem; color: #333; margin-bottom: 2rem;">All documents have been submitted successfully.</p>
+            <h1 class="thank-you-title">Onboarding Complete!</h1>
+            <p class="thank-you-subtitle">All documents have been submitted successfully.</p>
             
-            <div style="background: #f0f9ff; border: 2px solid var(--beecrown-green); border-radius: 8px; padding: 1.5rem; margin: 2rem auto; max-width: 500px; text-align: left;">
-                <p style="color: #333; margin: 0; line-height: 1.8;">
-                    ✅ All documents signed and submitted<br>
-                    📧 Confirmation emails will be sent shortly<br>
-                    📄 Your documents are being processed<br>
-                    🎉 Welcome to Beecrown Logistics!
-                </p>
+            <div class="completion-box">
+                <div class="completion-item">
+                    <span class="completion-item-icon">✅</span>
+                    <span>All documents signed and submitted</span>
+                </div>
+                <div class="completion-item">
+                    <span class="completion-item-icon">📧</span>
+                    <span>Confirmation emails will be sent shortly</span>
+                </div>
+                <div class="completion-item">
+                    <span class="completion-item-icon">📄</span>
+                    <span>Your documents are being processed</span>
+                </div>
+                <div class="completion-item">
+                    <span class="completion-item-icon">🎉</span>
+                    <span>Welcome to Beecrown Logistics!</span>
+                </div>
             </div>
 
-            <p style="color: #666; margin-top: 2rem;">You can now safely close this tab.</p>
+            <p class="footer-message">Thank you for completing the onboarding process. You can now safely close this tab.</p>
         </div>
     </div>
 
@@ -41,6 +121,11 @@
     <script>
         // Clear session data
         storage.clear();
+        
+        // Optional: Add a small delay before clearing to ensure everything is saved
+        setTimeout(() => {
+            console.log('Session data cleared');
+        }, 1000);
     </script>
 </body>
 </html>

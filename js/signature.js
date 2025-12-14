@@ -25,32 +25,47 @@ class SignaturePad {
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
         
-        // Mouse events
-        this.canvas.addEventListener('mousedown', (e) => this.startDrawing(e));
-        this.canvas.addEventListener('mousemove', (e) => this.draw(e));
-        this.canvas.addEventListener('mouseup', () => this.stopDrawing());
-        this.canvas.addEventListener('mouseout', () => this.stopDrawing());
+        // Mouse events - use capture phase to ensure we catch events
+        this.canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            this.startDrawing(e);
+        }, false);
+        this.canvas.addEventListener('mousemove', (e) => this.draw(e), false);
+        this.canvas.addEventListener('mouseup', () => this.stopDrawing(), false);
+        this.canvas.addEventListener('mouseout', () => this.stopDrawing(), false);
         
         // Touch events
         this.canvas.addEventListener('touchstart', (e) => this.handleTouch(e), { passive: false });
         this.canvas.addEventListener('touchmove', (e) => this.handleTouch(e), { passive: false });
-        this.canvas.addEventListener('touchend', () => this.stopDrawing());
+        this.canvas.addEventListener('touchend', () => this.stopDrawing(), { passive: false });
         
         // Resize handler
         window.addEventListener('resize', () => this.resize());
+        
+        // Debug: Log that events are set up
+        console.log('Signature pad events attached. Canvas size:', this.canvas.width, 'x', this.canvas.height);
     }
     
     resize() {
         const container = this.canvas.parentElement;
-        const containerWidth = container.offsetWidth;
-        
-        if (window.innerWidth <= 768) {
-            this.canvas.width = containerWidth - 32;
-            this.canvas.height = 150;
-        } else {
+        if (!container) {
+            // Fallback if container not found
             this.canvas.width = 800;
             this.canvas.height = 200;
+        } else {
+            const containerWidth = container.offsetWidth || 800;
+            
+            if (window.innerWidth <= 768) {
+                this.canvas.width = Math.max(containerWidth - 32, 300);
+                this.canvas.height = 150;
+            } else {
+                this.canvas.width = 800;
+                this.canvas.height = 200;
+            }
         }
+        
+        // IMPORTANT: Re-get context after resize (setting width/height resets context)
+        this.ctx = this.canvas.getContext('2d');
         
         // Reconfigure style after resize
         this.ctx.strokeStyle = '#000';
@@ -60,20 +75,26 @@ class SignaturePad {
     }
     
     startDrawing(e) {
+        console.log('startDrawing called', e);
         this.isDrawing = true;
         this.hasSignature = true;
         this.onSignatureChange(true);
         
         const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        console.log('Starting at:', x, y, 'Canvas size:', this.canvas.width, this.canvas.height);
         this.ctx.beginPath();
-        this.ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        this.ctx.moveTo(x, y);
     }
     
     draw(e) {
         if (!this.isDrawing) return;
         
         const rect = this.canvas.getBoundingClientRect();
-        this.ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        this.ctx.lineTo(x, y);
         this.ctx.stroke();
     }
     

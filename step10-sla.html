@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Level Agreement - Step 10</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .sla-document {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        .sla-document h1 {
+            font-size: 18px;
+            color: var(--beecrown-purple);
+            margin: 1.5rem 0 1rem 0;
+            text-align: center;
+        }
+        .sla-document h2 {
+            font-size: 14px;
+            color: var(--beecrown-purple);
+            margin: 1.5rem 0 0.75rem 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.25rem;
+        }
+        .sla-document h3 {
+            font-size: 12px;
+            color: #333;
+            margin: 1rem 0 0.5rem 0;
+        }
+        .sla-document p {
+            margin: 0.5rem 0;
+            text-align: justify;
+        }
+        .sla-document ul {
+            margin: 0.5rem 0 0.5rem 1.5rem;
+        }
+        .sla-document li {
+            margin: 0.25rem 0;
+        }
+        .sla-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .sla-document table td {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+        }
+        .sla-document .section-break {
+            page-break-after: always;
+            border-top: 2px solid var(--beecrown-purple);
+            margin-top: 2rem;
+            padding-top: 1rem;
+        }
+        .sla-document .field-label {
+            font-weight: bold;
+            display: inline-block;
+            min-width: 150px;
+        }
+        .sla-document .signature-table {
+            margin-top: 2rem;
+        }
+        .sla-document .signature-table td {
+            height: 60px;
+            vertical-align: bottom;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- SLA Document -->
+        <div class="document-container sla-document" id="slaDocument">
+            <div class="logo-container">
+                <div class="logo-text-main">Beecrown</div>
+                <div class="logo-text-sub">LOGISTICS LTD</div>
+                <div class="logo-text-tagline">THE POWER OF DELIVERY</div>
+            </div>
+
+            <!-- Business Code of Conduct Policy -->
+            <h1>BUSINESS CODE OF CONDUCT POLICY (BCC)</h1>
+            
+            <h2>BCC Mission Statement</h2>
+            <p>Beecrown Logistics Ltd are committed to ensuring that all our business undertakings and services are conducted in a professional and ethical manner and in a way that respects the human rights of all personnel associated with Beecrown Logistics Ltd and the environment in which their services are provided. We only engage with clients that share the same commitment and principles.</p>
+            <p>This document outlines the code of conduct that underpins Beecrown Logistics Ltd commitment to its Business Code of Conduct and forms part of an ongoing engagement strategy with our clients and contractors/service providers ALL of whom must agree to adhere and be bound by these principles.</p>
+
+            <h2>General Principles</h2>
+            
+            <h3>1. Health and Safety</h3>
+            <p>This is at the forefront of our BCC principles. We are committed to providing our employees and Service providers with a safe and healthy working environment in accordance with the minimum standards of the Health & Safety at Work Act 1974. In addition, we require our Service providers and the clients, to whom we provide our collective services, to ensure they adhere to the same requirements and legislation.</p>
+
+            <h3>2. Occupational Safety</h3>
+            <p>Where possible we provide training and awareness to our employees and Service providers on safety procedures in the workplace with a view to controlling exposure to potential physical safety hazards. All service providers receive regular briefings and advice about their respective environments. We also ensure that our clients provide the appropriate advice when our service providers are working within their environments. In addition, all service providers, are provided with, or encouraged to provide, the appropriate PPE and are educated and advised on the proper use of such equipment. We also maintain records and manage, track, log, and report occupational injuries and illnesses.</p>
+
+            <h3>3. Working Hours</h3>
+            <p>Except in unusual or emergency situations, we do not require any employee or Supplier to work or provide services in excess of 60 hours per week. Our Service providers are self-employed and have the right to choose their provision of service; however, we ensure, advise and monitor that they do not provide services in excess of six consecutive days in any 7-day work period. In addition, in accordance with GB Driver Rules, we monitor driving hours to ensure our service providers do not exceed the maximum permitted by law and in the interest of their own and public safety. Where excessive hours are as a result of our client's operational requirements or error, we reserve the right to record and notify the respective client accordingly.</p>
+
+            <h3>4. Physically Demanding Work</h3>
+            <p>Where possible we continually identify, evaluate, and monitor physically demanding tasks to ensure that employee or Service providers health and safety is not jeopardized. If appropriate we work with and advise our clients if such risks exist within their environment or control.</p>
+
+            <h3>5. Payments</h3>
+            <p>We are committed to ensuring that all our service providers are paid in a timely manner and service providers are paid via a recognized 3rd party payment provider in accordance with the self-billing process.</p>
+
+            <h3>6. Child Labour</h3>
+            <p>Beecrown Logistics Ltd will not tolerate the use of child labour. We only engage employees or Service providers, are: (i) 18 (ii) the age of completion of compulsory education, or (iii) the minimum age to work in the country where work is performed, or services provided. Beecrown Logistics Ltd supports the development of legitimate workplace apprenticeship programs that comply with applicable laws and this BCC policy.</p>
+
+            <h3>7. Involuntary Labour, Human Trafficking, and Slavery</h3>
+            <p>Beecrown Logistics Ltd do not and will not knowingly use forced labour - slave, prison, indentured, bonded, or otherwise. We will not, and do not, traffic workers or in any other way exploit workers by means of threat, force, coercion, abduction, or fraud. We also insist that our service providers strictly adhere to this principle. We do not require workers to surrender government issued identification, passports, or work permits as a condition of working, but do request sight of such documentation in order to verify, validate and complete legitimate immigration processing. We do ensure that service providers are issued with a Contract for Service/SLA which accurately reflects the nature of the services they are providing as a self-employed individual or business in their own right.</p>
+
+            <h3>8. Immigration Compliance</h3>
+            <p>Where Beecrown Logistics Ltd engage foreign or migrant employees or Service providers, such persons will only be engaged if they have a legal right to work in the UK and in full compliance with UK immigration and labour laws.</p>
+
+            <h2>Ethical & Behavioural Principles</h2>
+
+            <h3>9. Fair Treatment</h3>
+            <p>Beecrown Logistics Ltd require that all service providers must be treated with respect and dignity. We do not engage in or permit physical, verbal, or psychological abuse or coercion, including threats of violence, sexual harassment, or unreasonable restrictions on entering or exiting work and residential facilities. Service providers must be free to voice their concerns about any issues, including about our clients, the environment or our company to management or our independent auditors, without fear of retaliation by either our client, our own management or other service providers.</p>
+
+            <h3>10. Anti-discrimination</h3>
+            <p>Conditions of working must be based on an individual's ability to do the job, not on personal characteristics or beliefs, therefore we do not discriminate against our employees or service providers on the basis of ethnicity, race, colour, national origin, gender, gender identity, sexual orientation, religion, disability, age, political opinion or preference, pregnancy, migrant status, marital or family status, or similar factors in hiring and working/service practices such as job applications, promotions, job assignments, training, wages or remuneration, benefits or incentives, and termination. Other than pursuant to specific client requirements (i.e. drug and alcohol screening) we do not subject workers or applicants to any additional or specific compulsory medical tests that could be used in a discriminatory manner.</p>
+
+            <h3>11. Bribery</h3>
+            <p>Beecrown Logistics Ltd does not offer nor accept bribes or other means of obtaining undue or improper advantages to anyone for any reason, whether in dealings with our clients, governments or the private sector. We do not, by way of inducement or enticement encourage or solicit employees of our clients in exchange for preferential or beneficial treatment or do anything in breach of their own internal business or conduct ethics.</p>
+
+            <h3>12. Anti-Corruption</h3>
+            <p>Beecrown Logistics Ltd are committed to complying with all applicable anti-corruption laws, the UK Bribery Act, or any other geographical applicable law, and not offer anything of value, either directly or indirectly, to government officials in order to obtain or retain business. We will not and do not make illegal payments to government officials either directly or via third parties and where engagement with government officials is required, we will always seek and adhere to client and legal guidance on the law governing payments and gifts to governmental officials.</p>
+
+            <h3>13. Whistle-blower</h3>
+            <p>Where a client-led whistle-blowing policy or procedure is in place, Beecrown Logistics Ltd will, at all times, protect the service provider whistle-blower confidentiality and prohibit retaliation against service providers who report workplace matters. We also reserve the right to operate our own autonomous, whistle-blowing policy service providers to submit any concerns they may have about any of Beecrown Logistics Ltd policies, procedures and/or processes, as well as those of the clients we are engaged with.</p>
+
+            <h3>14. Management Accountability and Responsibility</h3>
+            <p>Beecrown Logistics Ltd have engaged with an external provider to ensure independent audit of all management systems and programs, from a due diligence and audit and compliance perspective in accordance with applicable laws and these BCC principles and will have designated internal management for implementing and monitoring recommendations and next steps. Beecrown Logistics Ltd also expects service providers and/or sub-contractors to respect and adhere to the standards and practices covered by these principles.</p>
+
+            <h2>Management Principles</h2>
+
+            <h3>15. Risk Management</h3>
+            <p>Beecrown Logistics Ltd have engaged the services of an independent 3rd party to ensure that there are processes in place to identify any environmental, health, safety, and ethical risks associated with their operational and labour practices. This includes any risks associated with the services provided to, or demands made by, our clients and the development, implementation and management of risk control mechanisms to ensure regulatory compliance.</p>
+
+            <h3>16. Documentation and Personal Data</h3>
+            <p>Beecrown Logistics Ltd ensure that they strictly adhere to the requirements of the Data Protection Act (DPA) and revised GDPR legislation with regards to the retention, storage and disposal of documentation and personal data in respect of clients, employees and Service providers. Beecrown Logistics Ltd ensure that any personal data captured or retained is stored in a totally secure environment and is done so with the knowledge and expressed consent of the individual subject and are subject to annual independent audit to maintain compliance with applicable laws.</p>
+
+            <h3>17. Emergency Procedures and Responses</h3>
+            <p>Where appropriate, Beecrown Logistics Ltd have emergency procedures and response mechanisms in place to address emergency situations and communicate information to service providers about workplace conditions.</p>
+
+            <div class="section-break"></div>
+
+            <!-- Confidentiality Agreement -->
+            <h1>Confidentiality Agreement</h1>
+            <p>Beecrown Logistics Ltd and our clients have information that is commercially important to us and our clients. This is referred to as "Confidential Information".</p>
+            <p>Confidential Information includes, but is not restricted to:</p>
+            <ul>
+                <li>The way we and our clients operate</li>
+                <li>The layout of our respective premises</li>
+                <li>The technology we and our clients use, including computers, applications and machinery</li>
+                <li>That goods and products that form part of the services we and you provide</li>
+                <li>The people we work and interact with</li>
+                <li>The people and companies who deliver to us and collect from us</li>
+                <li>Details about our client customers, including their names, addresses and products they buy</li>
+                <li>Anything to do with finance</li>
+                <li>Anything to do with advertising or marketing</li>
+                <li>Anything that you hear</li>
+            </ul>
+            <p>Beecrown Logistics Ltd and our clients Confidential Information is very important to our business. It is vital that it does not become known to other companies and we will take the necessary legal steps to protect ours and our clients Confidential Information.</p>
+            <p>As a service provider to Beecrown Logistics Ltd it is essential that you commit to the following:</p>
+            <ol>
+                <li>You will not disclose our Confidential Information to anyone or any company.</li>
+                <li>You will use our Confidential Information only to make up your mind about working with us.</li>
+                <li>You will notify us immediately if you discover that our Confidential Information has been disclosed, however it happens.</li>
+                <li>All our Confidential Information will remain our property</li>
+                <li>You will not trade stocks or shares based on our Confidential Information.</li>
+                <li>You will return any materials containing our Confidential Information to us if we ask you to.</li>
+                <li>You also agree that you will not disclose information to us that is confidential to you or anyone else.</li>
+            </ol>
+            <p>I the undersigned, understand and agree to protect Beecrown Logistics Ltd (and their respective clients) Confidential Information. I agree that my agreement is also applicable for the benefit of any other Beecrown Logistics Ltd companies.</p>
+
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Signed</strong></td>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Date</strong></td>
+                </tr>
+                <tr>
+                    <td id="confidentialitySignature"></td>
+                    <td id="confidentialityName"></td>
+                    <td id="confidentialityDate"></td>
+                </tr>
+            </table>
+
+            <div class="section-break"></div>
+
+            <!-- Driver's Information Pack -->
+            <h1>Driver's Information Pack</h1>
+            <p><span class="field-label">Name:</span> <span id="driverName"></span></p>
+            <p><span class="field-label">Email:</span> <span id="driverEmail"></span></p>
+            <p><span class="field-label">Contact Number:</span> <span id="driverPhone"></span></p>
+            <p><span class="field-label">Date Of Birth:</span> <span id="driverDOB"></span></p>
+            <p><span class="field-label">National Insurance Number:</span> <span id="driverNI"></span></p>
+            <p><span class="field-label">Place Of Birth:</span> <span id="driverPlaceOfBirth"></span></p>
+            <p><span class="field-label">Mothers First Name:</span> <span id="mothersFirstName"></span></p>
+            <p><span class="field-label">Mothers Maiden Name:</span> <span id="mothersMaidenName"></span></p>
+
+            <h3>Address History (7 Year History Required - Most Recent First)</h3>
+            <p><span class="field-label">Address:</span> <span id="currentAddress"></span></p>
+            <p><span class="field-label">Town:</span> <span id="currentTown"></span></p>
+            <p><span class="field-label">Post Code:</span> <span id="currentPostcode"></span></p>
+            <p><span class="field-label">Years at address:</span> <span id="yearsAtAddress"></span></p>
+
+            <h3>Next of Kin</h3>
+            <p><span class="field-label">Name:</span> <span id="nextOfKinName"></span></p>
+            <p><span class="field-label">Address:</span> <span id="nextOfKinAddress"></span></p>
+            <p><span class="field-label">Contact Number:</span> <span id="nextOfKinPhone"></span></p>
+            <p><span class="field-label">Relationship:</span> <span id="nextOfKinRelationship"></span></p>
+
+            <div class="section-break"></div>
+
+            <!-- Non-Mandatory Deduction Form -->
+            <h1>Non-Mandatory Deduction Form</h1>
+            <p><span class="field-label">Name:</span> <span id="deductionName"></span></p>
+            <p><span class="field-label">Role:</span> As per job listing</p>
+            <p><span class="field-label">Station:</span> As per job listing</p>
+            <p><strong>Possible Deduction:</strong> PCN, Van Damage, Van theft excess, Insurance excess (motor or Public liability) Customer property damage, Parcel theft, Route recovery (this would show a deduction on your invoice if we allocate a % of your route to another driver to rescue your route).</p>
+            <p><strong>Optional Deduction:</strong> if required: Company Fuel card usage, Start kit)</p>
+
+            <h3>PAYMENT PLAN:</h3>
+            <p>Deduction will occur weekly based on percentage deduction sliding scale.</p>
+            <ul>
+                <li>Not Exceeding £55 (0%)</li>
+                <li>Exceeding £55 but not exceeding £100 (6%)</li>
+                <li>Exceeding £100 but not exceeding £135 (8%)</li>
+                <li>Exceeding £135 but not exceeding £165 (10%)</li>
+                <li>Exceeding £165 but not exceeding £260 (12%)</li>
+                <li>Exceeding £260 but not exceeding £370 (17%)</li>
+                <li>Exceeding £370 (20%)</li>
+            </ul>
+
+            <h3>DECLARATION</h3>
+            <p>I hereby authorise Beecrown Logistics Ltd to make the any deduction from my pay in accordance with the above terms if damages occur. I understand and agree I am responsible for the satisfying the above amounts. I understand and agree that any amount that is due and outstanding at the time of working under the SLA or in regards to termination, regardless of whether the SLA termination was voluntary or not, will be deducted from my last invoice or any other amounts that may be owed to me. This authorises Beecrown Logistics Ltd to retain the entire amount of my last invoices in compliance with the law.</p>
+
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Signed on behalf of Beecrown Logistics Ltd</strong></td>
+                    <td><strong>Ghazalee Khan</strong></td>
+                    <td><strong>Date:</strong> as per driver signed date</td>
+                </tr>
+                <tr>
+                    <td><strong>Driver Signature and Name:</strong></td>
+                    <td id="deductionSignature"></td>
+                    <td id="deductionDate"></td>
+                </tr>
+            </table>
+
+            <div class="section-break"></div>
+
+            <!-- Medical Fitness Declaration -->
+            <h1>Medical Fitness Declaration</h1>
+            <p>Beecrown Logistics Ltd accepts it has a responsibility to ensure any contractor providing services on their behalf are medically fit to do so. Equally, every contractor wishing to provide services to Beecrown Logistics Ltd have a responsibility for their own health, safety and wellbeing. The provision of driving and multi-drop delivery services involves a significant amount of driving, manual handling of cages and parcels and delivery services. As a result, it is important that all contractors provide confirmation of their fitness to provide services below:</p>
+            <ul>
+                <li>I am physically fit and able to fulfil the demands of a multi-drop services</li>
+                <li>I am not taking any medication that will affect my ability to drive or provide services in a safe manner</li>
+                <li>I have no medical conditions that will affect my ability to drive or provide Services in a safe manner</li>
+                <li>I will comply with all health & safety guidelines at any sites I provide services at including safe driving and manual handling and will NOT place myself in danger by using unsafe practices</li>
+                <li>I have no mental or physical conditions that have not been reported to the DVLA which could affect my ability to drive</li>
+                <li>I will inform Beecrown Logistics Ltd if any of the above circumstances change or there are any changes which will affect my ability to provide services in the future</li>
+            </ul>
+            <p>I certify that the above information is true and that if any of my circumstances change that affect my health or my ability to safely provide my services, I will immediately inform Beecrown Logistics Ltd.</p>
+
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Signed</strong></td>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Date</strong></td>
+                </tr>
+                <tr>
+                    <td id="medicalSignature"></td>
+                    <td id="medicalName"></td>
+                    <td id="medicalDate"></td>
+                </tr>
+            </table>
+
+            <div class="section-break"></div>
+
+            <!-- EC/EEA Driving Licence Declaration Form -->
+            <h1>EC/EEA Driving Licence Declaration Form</h1>
+            <p><strong>**** Only Applies To Those Who Do Not Currently Have A UK Drivers Licence ****</strong></p>
+            <p>I, <span id="eeaCandidateName"></span>, hereby declare the following:</p>
+            <p>I hold a full and valid European Community (EC) / European Economic Area (EEA) driving licence, that meets the standard of Beecrown Logistics Ltd (the company) and its client(s), and holds no points, penalties and/or endorsements for the following:</p>
+            <ul>
+                <li>Having caused death through careless driving when unfit through drink</li>
+                <li>Having caused death by careless driving when unfit through drugs</li>
+                <li>Having caused death by careless driving with alcohol level above the limit</li>
+                <li>Having caused death by careless driving then failing to supply a specimen for alcohol analysis</li>
+                <li>Having caused death by driving: unlicensed, disqualified, or uninsured</li>
+                <li>Dangerous driving</li>
+                <li>Having caused manslaughter or culpable homicide while driving a vehicle</li>
+                <li>Furious driving</li>
+                <li>Driving or attempting to drive with alcohol above the legal limit</li>
+                <li>Driving or attempting to drive while unfit through drink</li>
+                <li>Driving or attempting to drive then failing to supply a specimen for analysis</li>
+                <li>Driving or attempting to drive then refusing to give permission for analysis of a blood sample that was taken without consent due to incapacity</li>
+                <li>Failure to provide a specimen for analysis in circumstances other than driving or attempting to drive</li>
+                <li>Failing to provide a specimen for a breath test</li>
+                <li>Using a vehicle uninsured against third party risks</li>
+                <li>Motor racing on the highway</li>
+                <li>Aggravated taking of a vehicle</li>
+                <li>I have not had any major preventable collisions within the previous three years</li>
+            </ul>
+            <p>I must notify the Company if I change my licence from an EC/EEA to a UK driving licence; I understand that when the Company received my new driving licence details, a standard DVLA check will be performed and held in my file.</p>
+
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Signed</strong></td>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Date</strong></td>
+                </tr>
+                <tr>
+                    <td id="eeaSignature"></td>
+                    <td id="eeaName"></td>
+                    <td id="eeaDate"></td>
+                </tr>
+            </table>
+
+            <div class="section-break"></div>
+
+            <!-- Stop and Search Policy -->
+            <h1>Stop and Search Policy</h1>
+            <p>As part of our contractual obligations to our clients any Beecrown Logistics Ltd employees and contractors working or providing services at any client's sites will be subject to and must give their consent to adhere to the clients 'Stop & Search Policy'.</p>
+            <p>The client's reserve the right to search you and/or any of your property when on its premises (including client car parks) and you agree that the client may search you and/or your property:</p>
+            <ul>
+                <li>At any time, the client reasonably believes or suspects that you may be in possession of, have destroyed, tampered with, concealed or handled stolen goods or has evidence of any theft or attempted theft; or</li>
+                <li>If the client reasonably believes or suspects that you may have drugs and/or alcohol and/or other inappropriate items on their premises; or</li>
+                <li>As part of its random searching policy; or process; or</li>
+                <li>When you enter or leave the clients premises.</li>
+            </ul>
+            <p>Issued badges must be worn and displayed at all times on their premises, failure to comply with this may result in restricting your access to the clients buildings.</p>
+            <p>I accept and confirm that I give my consent that during the period I provide services to Beecrown Logistics Ltd I will be subject to their client 'Stop & Search Policy'.</p>
+
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Signed</strong></td>
+                    <td><strong>Date</strong></td>
+                    <td><strong>Name</strong></td>
+                </tr>
+                <tr>
+                    <td id="stopSearchSignature"></td>
+                    <td id="stopSearchDate"></td>
+                    <td id="stopSearchName"></td>
+                </tr>
+            </table>
+
+            <div class="section-break"></div>
+
+            <!-- DVLA Share your Driving Licence Scheme -->
+            <h1>DVLA "Share your Driving Licence Scheme"</h1>
+            <p><strong>For UK Licence Holders Only</strong></p>
+            <p>I hereby give authority for Beecrown Logistics Ltd to obtain a Share Code from the DVLA on my behalf and, thereafter, to carry out checks in relation to my driving licence. I authorise such codes to be obtained and checks to be carried out on a regular basis as may be necessary, until such date as my contract with Beecrown Logistics Ltd reaches an end.</p>
+
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Signed</strong></td>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Date</strong></td>
+                </tr>
+                <tr>
+                    <td id="dvlaSignature"></td>
+                    <td id="dvlaName"></td>
+                    <td id="dvlaDate"></td>
+                </tr>
+            </table>
+
+            <!-- Signature Section -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad" style="border: 2px solid #ddd; border-radius: 4px; display: block; margin: 0 auto;"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Update progress
+        progress.update(10, 10);
+
+        // Format date helper
+        const formatDate = (dateString) => {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB');
+        };
+
+        // Populate all document fields
+        const today = new Date().toLocaleDateString('en-GB');
+        const todayISO = new Date().toISOString().split('T')[0];
+
+        // Confidentiality Agreement
+        document.getElementById('confidentialityName').textContent = driverData.fullName;
+        document.getElementById('confidentialityDate').textContent = today;
+
+        // Driver's Information Pack
+        document.getElementById('driverName').textContent = driverData.fullName || '';
+        document.getElementById('driverEmail').textContent = driverData.email || '';
+        document.getElementById('driverPhone').textContent = driverData.phone || '';
+        document.getElementById('driverDOB').textContent = formatDate(driverData.dateOfBirth) || '';
+        document.getElementById('driverNI').textContent = driverData.nationalInsurance || '';
+        document.getElementById('driverPlaceOfBirth').textContent = driverData.placeOfBirth || '';
+        document.getElementById('mothersFirstName').textContent = driverData.mothersFirstName || '';
+        document.getElementById('mothersMaidenName').textContent = driverData.mothersMaidenName || '';
+
+        // Address
+        const addressParts = driverData.formattedAddress.split('\n');
+        document.getElementById('currentAddress').textContent = addressParts[0] || '';
+        document.getElementById('currentTown').textContent = addressParts[addressParts.length - 2] || driverData.town || '';
+        document.getElementById('currentPostcode').textContent = addressParts[addressParts.length - 1] || driverData.postcode || '';
+        document.getElementById('yearsAtAddress').textContent = driverData.yearsAtAddress || '';
+
+        // Next of Kin
+        document.getElementById('nextOfKinName').textContent = driverData.nextOfKinName || '';
+        document.getElementById('nextOfKinAddress').textContent = driverData.nextOfKinAddress || '';
+        document.getElementById('nextOfKinPhone').textContent = driverData.nextOfKinPhone || '';
+        document.getElementById('nextOfKinRelationship').textContent = driverData.nextOfKinRelationship || '';
+
+        // Non-Mandatory Deduction Form
+        document.getElementById('deductionName').textContent = driverData.fullName;
+        document.getElementById('deductionDate').textContent = today;
+
+        // Medical Fitness Declaration
+        document.getElementById('medicalName').textContent = driverData.fullName;
+        document.getElementById('medicalDate').textContent = today;
+
+        // EC/EEA Driving Licence Declaration
+        document.getElementById('eeaCandidateName').textContent = driverData.fullName;
+        document.getElementById('eeaName').textContent = driverData.fullName;
+        document.getElementById('eeaDate').textContent = today;
+
+        // Stop and Search Policy
+        document.getElementById('stopSearchName').textContent = driverData.fullName;
+        document.getElementById('stopSearchDate').textContent = today;
+
+        // DVLA Share Scheme
+        document.getElementById('dvlaName').textContent = driverData.fullName;
+        document.getElementById('dvlaDate').textContent = today;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Service Level Agreement...');
+
+            try {
+                // Update all signature displays
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Update all signature cells
+                const signatureCells = [
+                    'confidentialitySignature',
+                    'deductionSignature',
+                    'medicalSignature',
+                    'eeaSignature',
+                    'stopSearchSignature',
+                    'dvlaSignature'
+                ];
+                
+                signatureCells.forEach(cellId => {
+                    const cell = document.getElementById(cellId);
+                    if (cell) {
+                        const img = document.createElement('img');
+                        img.src = signatureImage;
+                        img.style.maxWidth = '150px';
+                        img.style.maxHeight = '40px';
+                        cell.appendChild(img);
+                    }
+                });
+
+                // Generate PDF
+                const pdfBlob = await pdf.generate('slaDocument');
+
+                // Submit to webhook
+                await api.submit('SLA', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to thank you page after a short delay
+                setTimeout(() => {
+                    navigation.goTo('thank-you');
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

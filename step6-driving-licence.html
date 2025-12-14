@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driving Licence Declaration Form - Step 6</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .driving-licence-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+            min-height: auto;
+            height: auto;
+            overflow: visible;
+        }
+        .driving-licence-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .driving-licence-document h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 15pt 0 8pt 0;
+        }
+        .driving-licence-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .driving-licence-document ul {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .driving-licence-document li {
+            margin: 4pt 0;
+            list-style-type: disc;
+        }
+        .driving-licence-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12pt 0;
+            font-size: 10pt;
+        }
+        .driving-licence-document table td,
+        .driving-licence-document table th {
+            padding: 6pt;
+            border: 1px solid #000;
+            text-align: left;
+            vertical-align: top;
+        }
+        .driving-licence-document table th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .driving-licence-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .driving-licence-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .driving-licence-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        /* Hide signature input section, submit button when generating PDF */
+        .driving-licence-document.pdf-generation .signature-section,
+        .pdf-generation .signature-section {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .driving-licence-document.pdf-generation #submitBtn,
+        .pdf-generation #submitBtn {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .driving-licence-document.pdf-generation button,
+        .pdf-generation button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .driving-licence-document.pdf-generation canvas#signaturePad,
+        .pdf-generation canvas#signaturePad {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        /* Ensure all content is visible in PDF */
+        .pdf-generation {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+        }
+        .driving-licence-document.pdf-generation {
+            display: block !important;
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Driving Licence Declaration Form Document -->
+        <div class="document-container driving-licence-document" id="drivingLicenceDocument">
+            <h1>EC/EEA Driving Licence Declaration Form</h1>
+
+            <p style="text-align: center; font-weight: bold; margin: 15pt 0;">**** Only Applies To Those Who Do Not Currently Have A UK Drivers Licence ****</p>
+
+            <p>I, <span id="declarationName"></span>, hereby declare the following:</p>
+
+            <p>I hold a full and valid European Community (EC) / European Economic Area (EEA) driving licence, that meets the standard of Beecrown Logistics Ltd (the company) and its client(s), and holds no points, penalties and/or endorsements for the following:</p>
+
+            <ul>
+                <li>Having caused death through careless driving when unfit through drink</li>
+                <li>Having caused death by careless driving when unfit through drugs</li>
+                <li>Having caused death by careless driving with alcohol level above the limit</li>
+                <li>Having caused death by careless driving then failing to supply a specimen for alcohol analysis</li>
+                <li>Having caused death by driving: unlicensed, disqualified, or uninsured</li>
+                <li>Dangerous driving</li>
+                <li>Having caused manslaughter or culpable homicide while driving a vehicle</li>
+                <li>Furious driving</li>
+                <li>Driving or attempting to drive with alcohol above the legal limit</li>
+                <li>Driving or attempting to drive while unfit through drink</li>
+                <li>Driving or attempting to drive then failing to supply a specimen for analysis</li>
+                <li>Driving or attempting to drive then refusing to give permission for analysis of a blood sample that was taken without consent due to incapacity</li>
+                <li>Failure to provide a specimen for analysis in circumstances other than driving or attempting to drive</li>
+                <li>Failing to provide a specimen for a breath test</li>
+                <li>Using a vehicle uninsured against third party risks</li>
+                <li>Motor racing on the highway</li>
+                <li>Aggravated taking of a vehicle</li>
+                <li>I have not had any major preventable collisions within the previous three years</li>
+            </ul>
+
+            <p>I must notify the Company if I change my licence from an EC/EEA to a UK driving licence; I understand that when the Company received my new driving licence details, a standard DVLA check will be performed and held in my file.</p>
+
+            <hr style="margin: 20pt 0; border: none; border-top: 1pt solid #000;">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Signed</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="signatureArea" style="min-height: 50pt; vertical-align: top;">
+                            <!-- Signature will be inserted here -->
+                        </td>
+                        <td id="signatureName"></td>
+                        <td id="signatureDate"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(6, 8);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        // Construct full name from firstName and lastName
+        const fullName = driverData.firstName && driverData.lastName 
+            ? `${driverData.firstName} ${driverData.lastName}` 
+            : (driverData.fullName || '');
+        
+        document.getElementById('declarationName').textContent = fullName;
+        document.getElementById('signatureName').textContent = fullName;
+        document.getElementById('signatureDate').textContent = today;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Driving Licence Declaration Form...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '180pt';
+                sigImg.style.maxHeight = '50pt';
+                sigImg.style.display = 'block';
+                signatureArea.appendChild(sigImg);
+
+                // Ensure document is fully expanded before PDF generation
+                const documentElement = document.getElementById('drivingLicenceDocument');
+                documentElement.style.height = 'auto';
+                documentElement.style.maxHeight = 'none';
+                documentElement.style.overflow = 'visible';
+                documentElement.style.display = 'block';
+                
+                // Ensure parent container doesn't restrict height
+                if (documentElement.parentElement) {
+                    documentElement.parentElement.style.overflow = 'visible';
+                    documentElement.parentElement.style.height = 'auto';
+                }
+                
+                // Force multiple reflows to ensure all content is rendered
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll to bottom to ensure all content is loaded/rendered
+                window.scrollTo(0, documentElement.scrollHeight);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Force another reflow after scrolling
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll back to top for capture
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Final reflow
+                documentElement.offsetHeight;
+                
+                console.log('Step 6 - Document dimensions before PDF:', {
+                    scrollHeight: documentElement.scrollHeight,
+                    offsetHeight: documentElement.offsetHeight,
+                    clientHeight: documentElement.clientHeight,
+                    scrollWidth: documentElement.scrollWidth
+                });
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('drivingLicenceDocument');
+
+                // Submit to webhook
+                await api.submit('Driving Licence Declaration Form', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to step 7 (DVLA Share Your Driving Licence Scheme) after a short delay
+                setTimeout(() => {
+                    navigation.goToStep(7);
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+

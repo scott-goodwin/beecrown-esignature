@@ -13,10 +13,15 @@ const config = {
 
 const stepLabels = [
     'Personal Information',
-    'Service Level Agreement',
+    'Non-Mandatory Deduction Form',
+    'Stop and Search Policy',
     'Data Privacy Notice',
-    'Driver Information Pack',
-    'Driving Licence Declaration'
+    'Non-Disclosure & Data Protection',
+    'Driving Licence Declaration',
+    'DVLA Share Your Driving Licence Scheme',
+    'Driver\'s Information Pack',
+    'Medical Fitness Declaration',
+    'Policy Handbook'
 ];
 
 // Session Storage Management
@@ -46,16 +51,26 @@ const storage = {
 // Navigation
 const navigation = {
     goTo: (page) => {
-        window.location.href = page;
+        // Handle special pages
+        if (page === 'thank-you') {
+            window.location.href = 'thank-you.html';
+        } else {
+            window.location.href = page;
+        }
     },
     
     goToStep: (step) => {
         const pages = {
-            1: 'index.html',
-            2: 'step2-sla.html',
-            3: 'step3-privacy.html',
-            4: 'step4-driver-info.html',
-            5: 'step5-licence.html',
+            1: 'step1-personal.html',
+            2: 'step2-deduction.html',
+            3: 'step3-stop-search.html',
+            4: 'step4-privacy.html',
+            5: 'step5-non-disclosure.html',
+            6: 'step6-driving-licence.html',
+            7: 'step7-dvla.html',
+            8: 'step8-driver-info.html',
+            9: 'step9-medical-fitness.html',
+            10: 'step10-policy-handbook.html',
             'thank-you': 'thank-you.html'
         };
         
@@ -153,31 +168,195 @@ const pdf = {
         const element = document.getElementById(containerId);
         if (!element) throw new Error('Container not found');
         
+        // Store original scroll position
+        const originalScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const originalScrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+        // FIRST: Hide signature input section and submit button BEFORE any calculations
+        // This ensures they don't affect height calculations
+        const signatureSection = element.querySelector('.signature-section');
+        const submitBtn = element.querySelector('#submitBtn');
+        const signaturePad = element.querySelector('#signaturePad');
+        
+        const originalSigDisplay = signatureSection ? signatureSection.style.display : '';
+        const originalBtnDisplay = submitBtn ? submitBtn.style.display : '';
+        const originalPadDisplay = signaturePad ? signaturePad.style.display : '';
+        
+        if (signatureSection) signatureSection.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'none';
+        if (signaturePad) signaturePad.style.display = 'none';
+        
+        // Add class to hide signature input section (for CSS rules)
         element.classList.add('pdf-generation');
 
-        const canvas = await html2canvas(element, {
-            scale: 1.5,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff'
+        // Ensure element and its parents are fully visible
+        const originalOverflow = element.style.overflow;
+        const originalHeight = element.style.height;
+        const originalMaxHeight = element.style.maxHeight;
+        const originalParentOverflow = element.parentElement ? element.parentElement.style.overflow : '';
+        
+        element.style.overflow = 'visible';
+        element.style.height = 'auto';
+        element.style.maxHeight = 'none';
+        if (element.parentElement) {
+            element.parentElement.style.overflow = 'visible';
+        }
+        
+        // Scroll to top of element to ensure we start from the beginning
+        element.scrollIntoView({ behavior: 'instant', block: 'start' });
+        
+        // Force multiple reflows to ensure all content is rendered (excluding hidden signature section)
+        element.offsetHeight;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        element.offsetHeight;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        element.offsetHeight;
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        // Scroll to bottom to ensure all content is loaded/rendered
+        window.scrollTo(0, element.scrollHeight);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        window.scrollTo(0, 0);
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Force final reflow
+        element.offsetHeight;
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Simple approach: just capture all HTML - let html2canvas handle it
+        // The signature section is already hidden via CSS, so it won't be captured
+        // Use scrollHeight to get the full content height
+        const finalScrollHeight = element.scrollHeight;
+        const finalScrollWidth = element.scrollWidth;
+        
+        console.log('PDF Generation - Capturing all HTML:', {
+            scrollWidth: finalScrollWidth,
+            scrollHeight: finalScrollHeight,
+            note: 'Capturing entire element scrollHeight, signature section hidden via CSS'
         });
 
-        element.classList.remove('pdf-generation');
+        // Capture the full scroll height - html2canvas will handle the rest
+        const captureHeight = finalScrollHeight;
+        
+        console.log('PDF Generation - html2canvas capture settings:', {
+            width: finalScrollWidth,
+            height: captureHeight,
+            scrollHeight: element.scrollHeight,
+            finalScrollHeight: finalScrollHeight
+        });
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.9);
+        // Don't specify height - let html2canvas capture everything naturally
+        const canvas = await html2canvas(element, {
+            scale: 2, // Higher scale for better quality
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            // Don't limit width/height - let it capture all content
+            allowTaint: true,
+            removeContainer: false,
+            onclone: (clonedDoc) => {
+                // Ensure cloned element also has proper dimensions
+                const clonedElement = clonedDoc.getElementById(containerId);
+                if (clonedElement) {
+                    clonedElement.style.overflow = 'visible';
+                    clonedElement.style.height = 'auto';
+                    clonedElement.style.maxHeight = 'none';
+                    clonedElement.style.width = 'auto';
+                    // Ensure signature section is still hidden in clone
+                    const clonedSigSection = clonedElement.querySelector('.signature-section');
+                    const clonedSubmitBtn = clonedElement.querySelector('#submitBtn');
+                    const clonedSigPad = clonedElement.querySelector('#signaturePad');
+                    if (clonedSigSection) clonedSigSection.style.display = 'none';
+                    if (clonedSubmitBtn) clonedSubmitBtn.style.display = 'none';
+                    if (clonedSigPad) clonedSigPad.style.display = 'none';
+                }
+            }
+        });
+        
+        console.log('PDF Generation - Canvas captured:', {
+            canvasWidth: canvas.width,
+            canvasHeight: canvas.height,
+            expectedHeight: finalScrollHeight * 2 // scale 2
+        });
+
+        // Restore original styles and scroll position
+        element.style.overflow = originalOverflow;
+        element.style.height = originalHeight;
+        element.style.maxHeight = originalMaxHeight;
+        if (element.parentElement) {
+            element.parentElement.style.overflow = originalParentOverflow;
+        }
+        
+        // Restore signature section visibility
+        if (signatureSection) signatureSection.style.display = originalSigDisplay;
+        if (submitBtn) submitBtn.style.display = originalBtnDisplay;
+        if (signaturePad) signaturePad.style.display = originalPadDisplay;
+        
+        window.scrollTo(originalScrollLeft, originalScrollTop);
+        element.classList.remove('pdf-generation');
+        
+        console.log('PDF Generation - Canvas dimensions:', {
+            canvasWidth: canvas.width,
+            canvasHeight: canvas.height,
+            expectedHeight: finalScrollHeight * 2 // scale 2
+        });
+
+        // Simple, reliable approach: capture full content and split into pages
         const { jsPDF } = window.jspdf;
         const pdfDoc = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdfDoc.internal.pageSize.getWidth(); // 210mm
+        const pdfHeight = pdfDoc.internal.pageSize.getHeight(); // 297mm
+        
+        // Convert canvas to image
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        
+        // Calculate dimensions
+        const scale = 2;
+        const dpi = 96;
+        const pixelsPerMm = (dpi * scale) / 25.4;
+        
+        const imgWidthMm = canvas.width / pixelsPerMm;
+        const imgHeightMm = canvas.height / pixelsPerMm;
+        
+        // Scale to fill full A4 width
+        const widthScale = pdfWidth / imgWidthMm;
+        const scaledWidth = pdfWidth;
+        const scaledHeight = imgHeightMm * widthScale;
 
-        const pdfWidth = pdfDoc.internal.pageSize.getWidth();
-        const pdfHeight = pdfDoc.internal.pageSize.getHeight();
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
-        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight) * 25.4 / 96;
+        console.log('PDF Generation - Pagination:', {
+            imgHeightMm,
+            scaledHeight,
+            pdfHeight,
+            totalPages: Math.ceil(scaledHeight / pdfHeight)
+        });
 
-        const imgScaledWidth = imgWidth * ratio;
-        const imgScaledHeight = imgHeight * ratio;
-
-        pdfDoc.addImage(imgData, 'JPEG', 0, 0, imgScaledWidth, imgScaledHeight);
+        // Improved pagination: ensure all content is added
+        let position = 0;
+        let pageCount = 0;
+        const totalPages = Math.ceil(scaledHeight / pdfHeight);
+        
+        // Add first page
+        pdfDoc.addImage(imgData, 'JPEG', 0, position, scaledWidth, scaledHeight);
+        pageCount++;
+        
+        // Add additional pages until all content is shown
+        while (pageCount < totalPages) {
+            position = -(pageCount * pdfHeight);
+            pdfDoc.addPage();
+            pdfDoc.addImage(imgData, 'JPEG', 0, position, scaledWidth, scaledHeight);
+            pageCount++;
+            
+            // Safety check to prevent infinite loop
+            if (pageCount > 100) {
+                console.error('PDF Generation - Too many pages, stopping at', pageCount);
+                break;
+            }
+        }
+        
+        console.log('PDF Generation - Completed:', {
+            totalPages: pageCount,
+            expectedPages: totalPages
+        });
         
         return pdfDoc.output('blob');
     }
@@ -194,35 +373,40 @@ const api = {
             .replace(/\..+/, '')
             .replace('T', '');
         
-        const filename = `${docType}_${driverData.driverReference}_${timestamp}.pdf`;
+        // Handle missing driverReference (for step 1)
+        const driverRef = driverData.driverReference || 'TEMP-' + timestamp;
+        const filename = `${docType}_${driverRef}_${timestamp}.pdf`;
 
         const formData = new FormData();
         formData.append('documentType', docType);
-        formData.append('driverName', driverData.fullName);
-        formData.append('driverReference', driverData.driverReference);
-        formData.append('email', driverData.email);
+        formData.append('driverName', driverData.fullName || metadata.driverName || '');
+        formData.append('driverReference', driverRef);
+        formData.append('email', driverData.email || '');
         formData.append('signatureDate', new Date().toISOString().split('T')[0]);
         formData.append('filename', filename);
         
         // Merge default metadata with provided metadata
         const fullMetadata = {
-            phone: driverData.phone,
-            dateOfBirth: driverData.dateOfBirth,
-            nationalInsurance: driverData.nationalInsurance,
-            address: driverData.formattedAddress,
+            phone: driverData.phone || '',
+            dateOfBirth: driverData.dateOfBirth || '',
+            nationalInsurance: driverData.nationalInsurance || '',
+            address: driverData.formattedAddress || '',
             ...metadata
         };
 
         formData.append('metadata', JSON.stringify(fullMetadata));
         formData.append('pdfFile', pdfBlob, filename);
 
+        // Ensure POST method is explicitly set
         const response = await fetch(config.webhookUrl, {
             method: 'POST',
-            body: formData
+            body: formData,
+            // Don't set Content-Type - browser will set it with boundary for FormData
         });
 
         if (!response.ok) {
-            throw new Error(`Submission failed: ${response.statusText}`);
+            const errorText = await response.text().catch(() => response.statusText);
+            throw new Error(`Submission failed: ${response.status} ${response.statusText} - ${errorText}`);
         }
 
         return await response.json();

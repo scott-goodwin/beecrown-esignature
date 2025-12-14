@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Handbook - Step 10</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .policy-handbook-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+            min-height: auto;
+            height: auto;
+            overflow: visible;
+        }
+        .policy-handbook-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .policy-handbook-document h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 15pt 0 8pt 0;
+        }
+        .policy-handbook-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .policy-handbook-document ul {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .policy-handbook-document li {
+            margin: 4pt 0;
+            list-style-type: disc;
+        }
+        .policy-handbook-document ol {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .policy-handbook-document ol li {
+            margin: 4pt 0;
+            list-style-type: decimal;
+        }
+        .policy-handbook-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12pt 0;
+            font-size: 9pt;
+        }
+        .policy-handbook-document table td,
+        .policy-handbook-document table th {
+            padding: 4pt;
+            border: 1px solid #000;
+            text-align: left;
+            vertical-align: top;
+        }
+        .policy-handbook-document table th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .policy-handbook-document hr {
+            margin: 15pt 0;
+            border: none;
+            border-top: 1pt solid #000;
+        }
+        .policy-handbook-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .policy-handbook-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .policy-handbook-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        /* Hide signature input section, submit button when generating PDF */
+        .policy-handbook-document.pdf-generation .signature-section,
+        .pdf-generation .signature-section {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .policy-handbook-document.pdf-generation #submitBtn,
+        .pdf-generation #submitBtn {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .policy-handbook-document.pdf-generation button,
+        .pdf-generation button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .policy-handbook-document.pdf-generation canvas#signaturePad,
+        .pdf-generation canvas#signaturePad {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        /* Ensure all content is visible in PDF */
+        .pdf-generation {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+        }
+        .policy-handbook-document.pdf-generation {
+            display: block !important;
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Policy Handbook Document -->
+        <div class="document-container policy-handbook-document" id="policyHandbookDocument">
+            <h1>BUSINESS CODE OF CONDUCT POLICY (BCC)</h1>
+
+            <h2>BCC Mission Statement</h2>
+
+            <p>Beecrown Logistics Ltd are committed to ensuring that all our business undertakings and services are conducted in a professional and ethical manner and in a way that respects the human rights of all personnel associated with Beecrown Logistics Ltd and the environment in which their services are provided. We only engage with clients that share the same commitment and principles.</p>
+
+            <p>This document outlines the code of conduct that underpins Beecrown Logistics Ltd commitment to its Business Code of Conduct and forms part of an ongoing engagement strategy with our clients and contractors/service providers ALL of whom must agree to adhere and be bound by these principles.</p>
+
+            <h2>General Principles</h2>
+
+            <ol>
+                <li><strong>Health and Safety.</strong> This is at the forefront of our BCC principles. We are committed to providing our employees and Service providers with a safe and healthy working environment in accordance with the minimum standards of the Health & Safety at Work Act 1974. In addition, we require our Service providers and the clients, to whom we provide our collective services, to ensure they adhere to the same requirements and legislation</li>
+                <li><strong>Occupational Safety.</strong> Where possible we provide training and awareness to our employees and Service providers on safety procedures in the workplace with a view to controlling exposure to potential physical safety hazards. All service providers receive regular briefings and advice about their respective environments. We also ensure that our clients provide the appropriate advice when our service providers are working within their environments. In addition, all service providers, are provided with, or encouraged to provide, the appropriate PPE and are educated and advised on the proper use of such equipment. We also maintain records and manage, track, log, and report occupational injuries and illnesses.</li>
+                <li><strong>Working Hours.</strong> Except in unusual or emergency situations, we do not require any employee or Supplier to work or provide services in excess of 60 hours per week. Our Service providers are self-employed and have the right to choose their provision of service; however, we ensure, advise and monitor that they do not provide services in excess of six consecutive days in any 7-day work period. In addition, in accordance with GB Driver Rules, we monitor driving hours to ensure our service providers do not exceed the maximum permitted by law and in the interest of their own and public safety. Where excessive hours are as a result of our client's operational requirements or error, we reserve the right to record and notify the respective client accordingly.</li>
+                <li><strong>Physically Demanding Work.</strong> Where possible we continually identify, evaluate, and monitor physically demanding tasks to ensure that employee or Service providers health and safety is not jeopardized. If appropriate we work with and advise our clients if such risks exist within their environment or control.</li>
+                <li><strong>Payments.</strong> We are committed to ensuring that all our service providers are paid in a timely manner and service providers are paid via a recognized 3rd party payment provider in accordance with the self-billing process.</li>
+                <li><strong>Child Labour.</strong> Beecrown Logistics Ltd will not tolerate the use of child labour. We only engage employees or Service providers, are: (i) 18 (ii) the age of completion of compulsory education, or (iii) the minimum age to work in the country where work is performed, or services provided. Beecrown Logistics Ltd supports the development of legitimate workplace apprenticeship programs that comply with applicable laws and this BCC policy.</li>
+                <li><strong>Involuntary Labour, Human Trafficking, and Slavery.</strong> Beecrown Logistics Ltd do not and will not knowingly use forced labour - slave, prison, indentured, bonded, or otherwise. We will not, and do not, traffic workers or in any other way exploit workers by means of threat, force, coercion, abduction, or fraud. We also insist that our service providers strictly adhere to this principle. We do not require workers to surrender government issued identification, passports, or work permits as a condition of working, but do request sight of such documentation in order to verify, validate and complete legitimate immigration processing. We do ensure that service providers are issued with a Contract for Service/SLA which accurately reflects the nature of the services they are providing as a self-employed individual or business in their own right.</li>
+                <li><strong>Immigration Compliance.</strong> Where Beecrown Logistics Ltd engage foreign or migrant employees or Service providers, such persons will only be engaged if they have a legal right to work in the UK and in full compliance with UK immigration and labour laws.</li>
+            </ol>
+
+            <h2>Ethical & Behavioural Principles</h2>
+
+            <ol start="9">
+                <li><strong>Fair Treatment.</strong> Beecrown Logistics Ltd require that all service providers must be treated with respect and dignity. We do not engage in or permit physical, verbal, or psychological abuse or coercion, including threats of violence, sexual harassment, or unreasonable restrictions on entering or exiting work and residential facilities. Service providers must be free to voice their concerns about any issues, including about our clients, the environment or our company to management or our independent auditors, without fear of retaliation by either our client, our own management or other service providers.</li>
+                <li><strong>Anti-discrimination.</strong> Conditions of working must be based on an individual's ability to do the job, not on personal characteristics or beliefs, therefore we do not discriminate against our employees or Service providers on the basis of ethnicity, race, colour, national origin, gender, gender identity, sexual orientation, religion, disability, age, political opinion or preference, pregnancy, migrant status, marital or family status, or similar factors in hiring and working/service practices such as job applications, promotions, job assignments, training, wages or remuneration, benefits or incentives, and termination. Other than pursuant to specific client requirements (i.e. drug and alcohol screening) we do not subject workers or applicants to any additional or specific compulsory medical tests that could be used in a discriminatory manner.</li>
+                <li><strong>Bribery.</strong> Beecrown Logistics Ltd does not offer nor accept bribes or other means of obtaining undue or improper advantages to anyone for any reason, whether in dealings with our clients, governments or the private sector. We do not, by way of inducement or enticement encourage or solicit employees of our clients in exchange for preferential or beneficial treatment or do anything in breach of their own internal business or conduct ethics.</li>
+                <li><strong>Anti-Corruption.</strong> Beecrown Logistics Ltd are committed to complying with all applicable anti-corruption laws, the UK Bribery Act, or any other geographical applicable law, and not offer anything of value, either directly or indirectly, to government officials in order to obtain or retain business. We will not and do not make illegal payments to government officials either directly or via third parties and where engagement with government officials is required, we will always seek and adhere to client and legal guidance on the law governing payments and gifts to governmental officials.</li>
+                <li><strong>Whistle-blower.</strong> Where a client-led whistle-blowing policy or procedure is in place, Beecrown Logistics Ltd will, at all times, protect the service provider whistle-blower confidentiality and prohibit retaliation against service providers who report workplace matters. We also reserve the right to operate our own autonomous, whistle-blowing policy service providers to submit any concerns they may have about any of Beecrown Logistics Ltd policies, procedures and/or processes, as well as those of the clients we are engaged with.</li>
+                <li><strong>Management Accountability and Responsibility.</strong> Beecrown Logistics Ltd have engaged with an external provider to ensure independent audit of all management systems and programs, from a due diligence and audit and compliance perspective in accordance with applicable laws and these BCC principles and will have designated internal management for implementing and monitoring recommendations and next steps. Beecrown Logistics Ltd also expects service providers and/or sub-contractors to respect and adhere to the standards and practices covered by these principles.</li>
+            </ol>
+
+            <h2>Management Principles</h2>
+
+            <ol start="15">
+                <li><strong>Risk Management.</strong> Beecrown Logistics Ltd have engaged the services of an independent 3rd party to ensure that there are processes in place to identify any environmental, health, safety, and ethical risks associated with their operational and labour practices. This includes any risks associated with the services provided to, or demands made by, our clients and the development, implementation and management of risk control mechanisms to ensure regulatory compliance</li>
+                <li><strong>Documentation and Personal Data.</strong> Beecrown Logistics Ltd ensure that they strictly adhere to the requirements of the Data Protection Act (DPA) and revised GDPR legislation with regards to the retention, storage and disposal of documentation and personal data in respect of clients, employees and Service providers. Beecrown Logistics Ltd ensure that any personal data captured or retained is stored in a totally secure environment and is done so with the knowledge and expressed consent of the individual subject and are subject to annual independent audit to maintain compliance with applicable laws.</li>
+                <li><strong>Emergency Procedures and Responses.</strong> Where appropriate, Beecrown Logistics Ltd have established and documented emergency procedures and response plans to address potential emergency situations and incidents. These procedures are communicated to all relevant personnel and are reviewed and updated regularly to ensure their effectiveness.</li>
+            </ol>
+
+            <hr>
+
+            <h2>Equality and Diversity Policy</h2>
+
+            <p>Beecrown Logistics Ltd is committed to encouraging equality and diversity among our workforce and eliminating unlawful discrimination. The aim is for our workforce to be truly representative of all sections of society and our customers, and for each employee and service provider to feel respected and able to give their best.</p>
+
+            <p>The policy's purpose is to:</p>
+            <ul>
+                <li>Provide equality, fairness and respect for all in our employment and service provision, whether temporary, part-time or full-time</li>
+                <li>Not unlawfully discriminate because of the Equality Act 2010 protected characteristics of age, disability, gender reassignment, marriage and civil partnership, pregnancy and maternity, race (including colour, nationality, and ethnic or national origin), religion or belief, sex and sexual orientation</li>
+                <li>Oppose and avoid all forms of unlawful discrimination. This includes in pay and benefits, terms and conditions of employment, dealing with grievances and discipline, dismissal, redundancy, leave for parents, requests for flexible working, and selection for employment, promotion, training or other developmental opportunities</li>
+            </ul>
+
+            <p>Beecrown Logistics Ltd commits to:</p>
+            <ul>
+                <li>Encourage equality and diversity in the workplace as they are good practice and make business sense</li>
+                <li>Create a working environment free of bullying, harassment, victimisation and unlawful discrimination, promoting dignity and respect for all, and where individual differences and the contributions of all staff are recognised and valued</li>
+                <li>Take seriously complaints of bullying, harassment, victimisation and unlawful discrimination by fellow employees, customers, suppliers, visitors, the public and any others in the course of the organisation's work activities</li>
+                <li>Make decisions concerning staff being based on merit (apart from in any necessary and limited exemptions and exceptions allowed under the Equality Act)</li>
+                <li>Review employment practices and procedures when necessary to ensure fairness, and also update them and the policy to take account of changes in the law</li>
+                <li>Monitor the make-up of the workforce regarding information such as age, sex, ethnic background, sexual orientation, religion or belief, and disability in encouraging equality and diversity, and in meeting the aims and commitments set out in the equality and diversity policy</li>
+                <li>Monitoring will also include assessing how the equality and diversity policy, and any supporting action plan, are working in practice, reviewing them annually, and considering and taking action to address any issues</li>
+            </ul>
+
+            <p>Agreement to follow this policy forms part of the contract of employment and service provision. The organisation will not tolerate any form of intimidation, bullying or harassment, and disciplinary action will be taken against any employee or service provider who breaches this policy.</p>
+
+            <hr>
+
+            <h2>MENTAL HEALTH & STRESS POLICY</h2>
+
+            <p>Beecrown Logistics Ltd recognises the importance of all its personnel, including employees and self-employed drivers and that their wellbeing is vital to the effective performance both at work and when they are providing their services. To this end, Beecrown Logistics Ltd is committed to providing and maintaining and promoting a healthy and supportive working environment for all its personnel and recognises the following legal obligations:</p>
+
+            <ul>
+                <li>Under the terms of the Health and Safety at Work Act 1974, the Company has a duty to maintain the health and safety of its personnel as far as is reasonably practical.</li>
+                <li>The Management of Health and Safety at Work Regulations 1999 place a duty on the Company to assess and control the degree of stress in the workplace.</li>
+                <li>The Equality Act 2010 places a duty on the Company not to discriminate against personnel who suffer from a disability under the Act, which includes long term ill health caused by stress at work.</li>
+            </ul>
+
+            <p>Although Beecrown Logistics Ltd has no control over external or personal factors, it is committed to managing stress and risks within its control, and to providing support to all personnel who may be suffering from stress.</p>
+
+            <h3>Aims of the Policy</h3>
+
+            <ul>
+                <li>To ensure the physical and mental health of all personnel.</li>
+                <li>To promote a healthy, safe and friendly working environment and control and reduce risks to mental health.</li>
+                <li>To help provide and maintain a supportive and non-judgmental working environment.</li>
+                <li>To provide effective support to all personnel in managing stress and other mental health problems, and to encourage better recognition of mental health issues; and</li>
+                <li>To recognise that the prevention of stress is easier than dealing with it once it has arisen.</li>
+            </ul>
+
+            <h3>Stress and its Recognition</h3>
+
+            <p>Stress is a natural reaction to excessive pressure that is experienced by everybody. When stress is experienced consistently over a period of time, its effects can become detrimental and lead to further and more serious psychological and physical illnesses. Stress itself can be caused by an infinite number of variables which will vary enormously in different individuals. By way of example, personal factors like family problems can easily affect an individual while work-based factors like bullying, lack of training or poor working conditions can just as easily spill over into the home.</p>
+
+            <p>Recognising stress can be difficult as its effects will vary from person to person but the following signs can sometimes indicate that someone is experiencing difficulty:</p>
+
+            <ul>
+                <li>Changes in behaviour.</li>
+                <li>Indecisiveness.</li>
+                <li>Non-attendance; or</li>
+                <li>Increase in the use of tobacco or alcohol.</li>
+            </ul>
+
+            <p>Although Beecrown Logistics Ltd has no control over external factors which may be more difficult to identify, the Health and Safety Executive has identified 6 main causes of stress at work which the Company can affect:</p>
+
+            <ul>
+                <li>Demands made on personnel.</li>
+                <li>The level of control personnel have over their work or provision of services.</li>
+                <li>The support personnel receive from Beecrown Logistics Ltd employees and driver colleagues.</li>
+                <li>The clarity of an individual's role and the services they provide.</li>
+                <li>The nature of relationships at their respective place of work; and</li>
+                <li>The way that changes are managed.</li>
+            </ul>
+
+            <p>Beecrown Logistics Ltd is aware that stress is easier to manage before it becomes a problem and with that in mind will endeavour to operate in a fashion that takes all of the above factors into account. The Company will also always be open to discuss how an alteration of one or more of these factors might produce a better working and service environment.</p>
+
+            <h3>Principles</h3>
+
+            <p>Beecrown Logistics Ltd undertake to always follow these key principles:</p>
+
+            <ul>
+                <li>We will conduct an annual assessment of the risks to all personnel's health, both mental and physical, based on data collected from the workplace including nonattendance, attrition rates, on-road and client-led service issues and accidents.</li>
+                <li>We will always listen to any concerns that all our employed or service providers may have. If any individual believes that the service, they are providing is putting their mental health or wellbeing at risk, they will be given the opportunity to raise their concerns and/or observations to a representative of the Company. All such concerns will be treated with respect and dignity, and where possible, we will endeavour to provide the necessary information to make their own informed decisions.</li>
+                <li>All cases will be dealt with in accordance with Beecrown Logistics Ltd policy on equality and diversity details of which, or access to, would have already been provided to Beecrown Logistics Ltd personnel.</li>
+                <li>All discussions, requests for help and advice will be kept strictly confidential and the information gathered will be held in accordance with the Beecrown Logistics Ltd Data Protection & GDPR Policies.</li>
+            </ul>
+
+            <hr>
+
+            <h2>Emergency Escalation Process</h2>
+
+            <p>Detailed below is the Beecrown Logistics Ltd Emergency Escalation Process that we urge every Driver providing services to Beecrown Logistics Ltd follow:</p>
+
+            <p>The first priority in any emergency, accident or incident situation is SAFETY both to DRIVER and any member of the public.</p>
+
+            <p>In the event of any threat to life or injury the driver MUST DIAL 999 and contact the emergency services</p>
+
+            <p>Only once the safety of the driver and any member of the public has been assured should the driver follow the next steps to informing the appropriate 'Point of Contact'. (Note: Contact should be made at the FIRST OPPORTUNITY after the incident has occurred)</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>POC</th>
+                        <th>Contact No</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Any incident involving threats or the use of a weapon (e.g. theft/attempted theft of vehicle with violence, etc)</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Vehicle or parcel theft (driver not present)</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Traffic accident with 3rd party involvement (no injuries)</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Traffic accident with 3rd party not present (i.e.static vehicle)</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Damage to Property (customer or other property, i.e. local authority or public property e.g. lamp posts, bollards etc.)</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Vehicle Breakdown</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Dog Attack</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Incident/Altercation with Customer</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                    <tr>
+                        <td>Incident/Altercation with member of the public</td>
+                        <td>INPUT NAME</td>
+                        <td>INPUT NUMBER</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <hr>
+
+            <h2>SERVICE PROVIDER POLICY SIGN-OFF DISCLAIMER</h2>
+
+            <p>I can confirm that I have been given the opportunity and read over all the documentation listed above and understand, as a service provider/independent contractor providing services to Beecrown Logistics Ltd, it is my responsibility to raise any concerns with my POC/OSM or member of Beecrown Logistics Ltd Management. I have initialled against each policy indicating that I have read them and signed and dated this document accordingly.</p>
+
+            <table>
+                <tr>
+                    <td><strong>Name:</strong></td>
+                    <td id="signatureName"></td>
+                    <td><strong>DSP:</strong></td>
+                    <td>Beecrown Logistics Ltd</td>
+                </tr>
+                <tr>
+                    <td><strong>Depot:</strong></td>
+                    <td id="depotName"></td>
+                    <td><strong>Date:</strong></td>
+                    <td id="signatureDate"></td>
+                </tr>
+            </table>
+
+            <table style="margin-top: 15pt;">
+                <thead>
+                    <tr>
+                        <th>Policies</th>
+                        <th>Initials</th>
+                        <th>Policies</th>
+                        <th>Initials</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CSR Policy</td>
+                        <td></td>
+                        <td>Health & Safety Policy</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Modern Slavery Statement</td>
+                        <td></td>
+                        <td>GDPR & Associated Documents</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Anti-Discrimination Statement</td>
+                        <td></td>
+                        <td>Pregnancy Risk & Awareness Policy</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Equality Policy</td>
+                        <td></td>
+                        <td>Drugs & Alcohol Policy</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Bullying & Harassment Policy</td>
+                        <td></td>
+                        <td>Social Media Policy</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Sexual Harassment Policy</td>
+                        <td></td>
+                        <td>Non-Solicitation Policy</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Anti-Bribery Policy</td>
+                        <td></td>
+                        <td>Child Labour Policy</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Alternative Work Schedule Policy</td>
+                        <td></td>
+                        <td>Anti-Solicitation Policy</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table style="margin-top: 15pt;">
+                <thead>
+                    <tr>
+                        <th>SOP</th>
+                        <th>Initials</th>
+                        <th>SOP</th>
+                        <th>Initials</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monitoring Driver Consecutive Days (OSM's only)</td>
+                        <td></td>
+                        <td>Right to Work Checks (OSM's only)</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>OSM Emergency Escalation VSOP (OSM's only)</td>
+                        <td></td>
+                        <td>Emergency Escalation Process(Driver & OSM)</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>DVSA Daily Van Checks</td>
+                        <td></td>
+                        <td>Driving in Adverse Weather</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Age Verification Deliveries(AVD)</td>
+                        <td></td>
+                        <td>Manual Handling</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Customer Calling</td>
+                        <td></td>
+                        <td>Road Safety</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ID/Security Badge Procedures</td>
+                        <td></td>
+                        <td>Vehicle Security</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>On-Road Incident Reporting</td>
+                        <td></td>
+                        <td>The Perfect Delivery</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Safety Equipment</td>
+                        <td></td>
+                        <td>Safe Delivery</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>LQ Hazmat</td>
+                        <td></td>
+                        <td>EU Driving Licence Disclaimer</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Security, Safety & Service Awareness Briefing</td>
+                        <td></td>
+                        <td>Security, Safety & Service Handbook</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 15pt;">This policy, which will be reviewed and amended as necessary on an annual basis, has been approved & authorised by:</p>
+
+            <table style="margin-top: 15pt;">
+                <thead>
+                    <tr>
+                        <th>Signed</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="signatureArea" style="min-height: 50pt; vertical-align: top;">
+                            <!-- Signature will be inserted here -->
+                        </td>
+                        <td id="finalSignatureName"></td>
+                        <td id="finalSignatureDate"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(10, 10);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        // Construct full name from firstName and lastName
+        const fullName = driverData.firstName && driverData.lastName 
+            ? `${driverData.firstName} ${driverData.lastName}` 
+            : (driverData.fullName || '');
+        
+        document.getElementById('signatureName').textContent = fullName;
+        document.getElementById('depotName').textContent = driverData.station || '';
+        document.getElementById('signatureDate').textContent = today;
+        document.getElementById('finalSignatureName').textContent = fullName;
+        document.getElementById('finalSignatureDate').textContent = today;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Policy Handbook...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '180pt';
+                sigImg.style.maxHeight = '50pt';
+                sigImg.style.display = 'block';
+                signatureArea.appendChild(sigImg);
+
+                // Ensure document is fully expanded before PDF generation
+                const documentElement = document.getElementById('policyHandbookDocument');
+                documentElement.style.height = 'auto';
+                documentElement.style.maxHeight = 'none';
+                documentElement.style.overflow = 'visible';
+                documentElement.style.display = 'block';
+                
+                // Ensure parent container doesn't restrict height
+                if (documentElement.parentElement) {
+                    documentElement.parentElement.style.overflow = 'visible';
+                    documentElement.parentElement.style.height = 'auto';
+                }
+                
+                // Force multiple reflows to ensure all content is rendered
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll to bottom to ensure all content is loaded/rendered
+                window.scrollTo(0, documentElement.scrollHeight);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Force another reflow after scrolling
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll back to top for capture
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Final reflow
+                documentElement.offsetHeight;
+                
+                console.log('Step 10 - Document dimensions before PDF:', {
+                    scrollHeight: documentElement.scrollHeight,
+                    offsetHeight: documentElement.offsetHeight,
+                    clientHeight: documentElement.clientHeight,
+                    scrollWidth: documentElement.scrollWidth
+                });
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('policyHandbookDocument');
+
+                // Submit to webhook
+                await api.submit('Policy Handbook', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to thank you page after a short delay
+                setTimeout(() => {
+                    navigation.goTo('thank-you');
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+

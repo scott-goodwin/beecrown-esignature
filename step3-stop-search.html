@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop and Search Policy - Step 3</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .stop-search-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+        }
+        .stop-search-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .stop-search-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .stop-search-document ul {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .stop-search-document li {
+            margin: 4pt 0;
+            list-style-type: disc;
+        }
+        .stop-search-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20pt 0;
+        }
+        .stop-search-document table td {
+            padding: 8pt;
+            border: 1px solid #000;
+            text-align: left;
+        }
+        .stop-search-document table th {
+            padding: 8pt;
+            border: 1px solid #000;
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .stop-search-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .stop-search-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        .stop-search-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        /* Hide signature input section when generating PDF */
+        .pdf-generation .signature-section {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Stop and Search Policy Document -->
+        <div class="document-container stop-search-document" id="stopSearchDocument">
+            <h1>Stop and Search Policy</h1>
+
+            <p>As part of our contractual obligations to our clients any Beecrown Logistics Ltd employees and contractors working or providing services at any client's sites will be subject to and must give their consent to adhere to the clients 'Stop & Search Policy'.</p>
+
+            <p>The client's reserve the right to search you and/or any of your property when on its premises (including client car parks) and you agree that the client may search you and/or your property:</p>
+
+            <ul>
+                <li>At any time, the client reasonably believes or suspects that you may be in possession of, have destroyed, tampered with, concealed or handled stolen goods or has evidence of any theft or attempted theft; or</li>
+                <li>If the client reasonably believes or suspects that you may have drugs and/or alcohol and/or other inappropriate items on their premises; or</li>
+                <li>As part of its random searching policy; or process; or</li>
+                <li>When you enter or leave the clients premises.</li>
+            </ul>
+
+            <p>Issued badges must be worn and displayed at all times on their premises, failure to comply with this may result in restricting your access to the clients buildings.</p>
+
+            <p>I accept and confirm that I give my consent that during the period I provide services to Beecrown Logistics Ltd I will be subject to their client 'Stop & Search Policy'.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Signed</th>
+                        <th>Date</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="signatureArea" style="min-height: 50pt; vertical-align: top;">
+                            <!-- Signature will be inserted here -->
+                        </td>
+                        <td id="signatureDate"></td>
+                        <td id="signatureName"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(3, 7);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        document.getElementById('signatureDate').textContent = today;
+        document.getElementById('signatureName').textContent = driverData.fullName;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Stop and Search Policy...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '180pt';
+                sigImg.style.maxHeight = '50pt';
+                sigImg.style.display = 'block';
+                sigImg.style.marginBottom = '4pt';
+                signatureArea.appendChild(sigImg);
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('stopSearchDocument');
+
+                // Submit to webhook
+                await api.submit('Stop and Search Policy', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to step 4 (Data Privacy Notice) after a short delay
+                setTimeout(() => {
+                    navigation.goToStep(4);
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+

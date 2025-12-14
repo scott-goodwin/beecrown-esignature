@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Onboarding - Step 1</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Step 1 Content -->
+        <div class="document-container">
+            <div class="logo-container">
+                <div class="logo-text-main">Beecrown</div>
+                <div class="logo-text-sub">LOGISTICS LTD</div>
+                <div class="logo-text-tagline">THE POWER OF DELIVERY</div>
+            </div>
+
+            <h1 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 0.5rem;">Driver Onboarding</h1>
+            <p style="text-align: center; color: #666; margin-bottom: 2rem;">Please complete all information to begin your onboarding process</p>
+
+            <form id="initialForm">
+                <div class="general-error" id="generalError">
+                    ⚠️ Please fill in all required fields before continuing
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" required>
+                        <div class="form-error" id="firstNameError">First name is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" required>
+                        <div class="form-error" id="lastNameError">Last name is required</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" required>
+                        <div class="form-error" id="emailError">Valid email is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Contact Number <span class="required">*</span></label>
+                        <input type="tel" id="phone" required>
+                        <div class="form-error" id="phoneError">Contact number is required</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
+                        <input type="date" id="dateOfBirth" required>
+                        <div class="form-error" id="dateOfBirthError">Date of birth is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nationalInsurance">National Insurance Number <span class="required">*</span></label>
+                        <input type="text" id="nationalInsurance" required placeholder="e.g., AB123456C">
+                        <div class="form-error" id="nationalInsuranceError">National Insurance number is required</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="driverReference">Driver Reference <span class="required">*</span></label>
+                    <input type="text" id="driverReference" required placeholder="e.g., DRV-12345">
+                    <div class="form-error" id="driverReferenceError">Driver reference is required</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="placeOfBirth">Place of Birth</label>
+                        <input type="text" id="placeOfBirth" placeholder="e.g., London, UK">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="station">Station</label>
+                        <input type="text" id="station" placeholder="e.g., Luton">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mothersFirstName">Mother's First Name</label>
+                        <input type="text" id="mothersFirstName">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mothersMaidenName">Mother's Maiden Name</label>
+                        <input type="text" id="mothersMaidenName">
+                    </div>
+                </div>
+
+                <h3 style="color: var(--beecrown-purple); margin: 2rem 0 1rem 0;">Address Details</h3>
+
+                <div class="form-group">
+                    <label for="addressLine1">Address Line 1 <span class="required">*</span></label>
+                    <input type="text" id="addressLine1" required>
+                    <div class="form-error" id="addressLine1Error">Address line 1 is required</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="addressLine2">Address Line 2</label>
+                    <input type="text" id="addressLine2">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="town">Town/City <span class="required">*</span></label>
+                        <input type="text" id="town" required>
+                        <div class="form-error" id="townError">Town/City is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postcode">Postcode <span class="required">*</span></label>
+                        <input type="text" id="postcode" required placeholder="e.g., BL1 4DH">
+                        <div class="form-error" id="postcodeError">Postcode is required</div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--beecrown-purple); margin: 2rem 0 1rem 0;">Next of Kin</h3>
+
+                <div class="form-group">
+                    <label for="nextOfKinName">Next of Kin Name</label>
+                    <input type="text" id="nextOfKinName">
+                </div>
+
+                <div class="form-group">
+                    <label for="nextOfKinAddress">Next of Kin Address</label>
+                    <input type="text" id="nextOfKinAddress">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nextOfKinPhone">Next of Kin Contact Number</label>
+                        <input type="tel" id="nextOfKinPhone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nextOfKinRelationship">Relationship</label>
+                        <input type="text" id="nextOfKinRelationship" placeholder="e.g., Spouse, Parent">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Continue to Deduction Form</button>
+            </form>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+        // Initialize progress
+        progress.update(1, 6);
+
+        // Handle form submission
+        document.getElementById('initialForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Clear errors
+            validation.clearErrors();
+
+            // Collect data
+            const data = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                nationalInsurance: document.getElementById('nationalInsurance').value.trim().toUpperCase(),
+                driverReference: document.getElementById('driverReference').value.trim().toUpperCase(),
+                placeOfBirth: document.getElementById('placeOfBirth').value.trim(),
+                station: document.getElementById('station').value.trim(),
+                mothersFirstName: document.getElementById('mothersFirstName').value.trim(),
+                mothersMaidenName: document.getElementById('mothersMaidenName').value.trim(),
+                addressLine1: document.getElementById('addressLine1').value.trim(),
+                addressLine2: document.getElementById('addressLine2').value.trim(),
+                town: document.getElementById('town').value.trim(),
+                postcode: document.getElementById('postcode').value.trim().toUpperCase(),
+                nextOfKinName: document.getElementById('nextOfKinName').value.trim(),
+                nextOfKinAddress: document.getElementById('nextOfKinAddress').value.trim(),
+                nextOfKinPhone: document.getElementById('nextOfKinPhone').value.trim(),
+                nextOfKinRelationship: document.getElementById('nextOfKinRelationship').value.trim()
+            };
+
+            // Generate derived fields
+            data.fullName = `${data.firstName} ${data.lastName}`;
+            
+            let formattedAddress = data.addressLine1;
+            if (data.addressLine2) formattedAddress += `\n${data.addressLine2}`;
+            formattedAddress += `\n${data.town}\n${data.postcode}`;
+            data.formattedAddress = formattedAddress;
+
+            // Validate
+            let hasErrors = false;
+            const required = ['firstName', 'lastName', 'email', 'phone', 'dateOfBirth', 'nationalInsurance', 'driverReference', 'addressLine1', 'town', 'postcode'];
+            
+            required.forEach(field => {
+                if (!data[field]) {
+                    validation.showError(field, `${field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} is required`);
+                    hasErrors = true;
+                }
+            });
+
+            // Email validation
+            if (data.email && !validation.validateEmail(data.email)) {
+                validation.showError('email', 'Please enter a valid email address');
+                hasErrors = true;
+            }
+
+            if (hasErrors) {
+                validation.showGeneralError();
+                utils.scrollToTop();
+                return;
+            }
+
+            // Save to session storage
+            storage.save(data);
+
+            // Navigate to next step (Deduction Form)
+            navigation.goToStep(2);
+        });
+    </script>
+</body>
+</html>

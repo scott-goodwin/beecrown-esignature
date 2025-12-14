@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Mandatory Deduction Form - Step 2</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .deduction-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+        }
+        .deduction-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .deduction-document h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 15pt 0 8pt 0;
+        }
+        .deduction-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .deduction-document ul {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .deduction-document li {
+            margin: 4pt 0;
+            list-style-type: disc;
+        }
+        .deduction-document .field-line {
+            margin: 6pt 0;
+        }
+        .deduction-document .field-label {
+            font-weight: bold;
+            display: inline;
+        }
+        .deduction-document hr {
+            margin: 15pt 0;
+            border: none;
+            border-top: 1px solid #000;
+            height: 0;
+            width: 100%;
+        }
+        .deduction-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .deduction-document #driverSignatureArea {
+            min-height: 50pt;
+            margin: 8pt 0 12pt 0;
+        }
+        .deduction-document #driverSignatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+            margin-bottom: 4pt;
+        }
+        .deduction-document #directorSig {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+            margin-bottom: 4pt;
+        }
+        /* Hide signature input section when generating PDF */
+        .pdf-generation .signature-section {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Deduction Form Document - Matches PDF exactly -->
+        <div class="document-container deduction-document" id="deductionDocument">
+            <h1>Non-Mandatory Deduction Form</h1>
+
+            <div class="field-line">
+                <span class="field-label">Name:</span> <span id="driverName"></span>
+            </div>
+            <div class="field-line">
+                <span class="field-label">Role:</span> Multi-Drop Driver
+            </div>
+            <div class="field-line">
+                <span class="field-label">Station:</span> <span id="stationName"></span>
+            </div>
+
+            <p><strong>Possible Deduction:</strong> PCN, Van Damage, Van theft excess, Insurance excess (motor or Public liability) Customer property damage, Parcel theft, Route recovery (this would show a deduction on your invoice if we allocate a % of your route to another driver to rescue your route).</p>
+
+            <p><strong>Optional Deduction:</strong> if required: Company Fuel card usage, Start kit)</p>
+
+            <h2>PAYMENT PLAN:</h2>
+            <p>Deduction will occur weekly based on percentage deduction sliding scale.</p>
+            <ul>
+                <li>Not Exceeding £55 (0%)</li>
+                <li>Exceeding £55 but not exceeding £100 (6%)</li>
+                <li>Exceeding £100 but not exceeding £135 (8%)</li>
+                <li>Exceeding £135 but not exceeding £165 (10%)</li>
+                <li>Exceeding £165 but not exceeding £260 (12%)</li>
+                <li>Exceeding £260 but not exceeding £370 (17%)</li>
+                <li>Exceeding £370 (20%)</li>
+            </ul>
+
+            <h2>DECLARATION</h2>
+            <p>I hereby authorise Beecrown Logistics Ltd to make the any deduction from my pay in accordance with the above terms if damages occur. I understand and agree I am responsible for the satisfying the above amounts. I understand and agree that any amount that is due and outstanding at the time of working under the SLA or in regards to termination, regardless of whether the SLA termination was voluntary or not, will be deducted from my last invoice or any other amounts that may be owed to me. This authorises Beecrown Logistics Ltd to retain the entire amount of my last invoices in compliance with the law.</p>
+
+            <hr>
+
+            <!-- Signature Section - Two Columns Side by Side -->
+            <div style="display: flex; justify-content: space-between; margin-top: 20pt; gap: 40pt;">
+                <!-- Left Column: Company Signature -->
+                <div style="flex: 1;">
+                    <p><strong>Signed on behalf of Beecrown Logistics Ltd</strong></p>
+                    <p><strong>Ghazalee Khan</strong></p>
+                    <div style="min-height: 50pt; margin: 8pt 0 12pt 0; border-bottom: 1px solid #000; padding-bottom: 4pt;">
+                        <img id="directorSig" alt="Director Signature" style="max-width: 180pt; max-height: 50pt; display: block;">
+                    </div>
+                    <p>Date: <span id="companyDate"></span></p>
+                </div>
+
+                <!-- Right Column: Driver Signature -->
+                <div style="flex: 1;">
+                    <p><strong>Driver Signature</strong></p>
+                    <p><strong id="driverNameDisplay"></strong></p>
+                    <div id="driverSignatureArea" style="min-height: 50pt; margin: 8pt 0 12pt 0; border-bottom: 1px solid #000; padding-bottom: 4pt;">
+                        <!-- Signature will be inserted here -->
+                    </div>
+                    <p>Date: <span id="driverDate"></span></p>
+                </div>
+            </div>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(2, 6);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        // All fields auto-populated from step 1
+        document.getElementById('driverName').textContent = driverData.fullName;
+        document.getElementById('driverNameDisplay').textContent = driverData.fullName;
+        document.getElementById('stationName').textContent = driverData.station || 'As per job listing';
+        document.getElementById('companyDate').textContent = today;
+        document.getElementById('driverDate').textContent = today;
+        document.getElementById('directorSig').src = config.directorSignature;
+
+        // Setup signature pad - use same simple approach as step4-sla.html
+        let signaturePad;
+        
+        // Wait a moment to ensure DOM is fully ready
+        setTimeout(() => {
+            try {
+                const canvas = document.getElementById('signaturePad');
+                if (!canvas) {
+                    console.error('Canvas not found!');
+                    return;
+                }
+                
+                console.log('Canvas found:', canvas);
+                console.log('Canvas parent:', canvas.parentElement);
+                console.log('Canvas computed style:', window.getComputedStyle(canvas));
+                
+                signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                    document.getElementById('submitBtn').disabled = !hasSig;
+                });
+                console.log('Signature pad initialized successfully', signaturePad);
+            } catch (error) {
+                console.error('Error initializing signature pad:', error);
+                console.error('Stack:', error.stack);
+            }
+        }, 100);
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Non-Mandatory Deduction Form...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('driverSignatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '200pt';
+                sigImg.style.maxHeight = '60pt';
+                sigImg.style.display = 'block';
+                sigImg.style.marginBottom = '4pt';
+                signatureArea.appendChild(sigImg);
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('deductionDocument');
+
+                // Submit to webhook
+                await api.submit('Deduction Form', pdfBlob, {
+                    station: document.getElementById('stationName').textContent || ''
+                });
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to step 3 (Stop and Search Policy) after a short delay
+                setTimeout(() => {
+                    navigation.goToStep(3);
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+
+

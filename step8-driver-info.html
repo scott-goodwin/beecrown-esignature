@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver's Information Pack - Step 8</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .driver-info-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+            min-height: auto;
+            height: auto;
+            overflow: visible;
+        }
+        .driver-info-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .driver-info-document h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 15pt 0 8pt 0;
+        }
+        .driver-info-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .driver-info-document .info-field {
+            margin: 6pt 0;
+        }
+        .driver-info-document .info-label {
+            font-weight: bold;
+            display: inline;
+        }
+        .driver-info-document .info-value {
+            display: inline;
+        }
+        .driver-info-document .address-section {
+            margin: 12pt 0;
+        }
+        .driver-info-document .address-section h3 {
+            font-size: 11pt;
+            font-weight: bold;
+            margin: 10pt 0 6pt 0;
+        }
+        .driver-info-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .driver-info-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .driver-info-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        /* Hide signature input section, submit button when generating PDF */
+        .driver-info-document.pdf-generation .signature-section,
+        .pdf-generation .signature-section {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .driver-info-document.pdf-generation #submitBtn,
+        .pdf-generation #submitBtn {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .driver-info-document.pdf-generation button,
+        .pdf-generation button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .driver-info-document.pdf-generation canvas#signaturePad,
+        .pdf-generation canvas#signaturePad {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        /* Ensure all content is visible in PDF */
+        .pdf-generation {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+        }
+        .driver-info-document.pdf-generation {
+            display: block !important;
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Driver's Information Pack Document -->
+        <div class="document-container driver-info-document" id="driverInfoDocument">
+            <h1>Driver's Information Pack</h1>
+
+            <div class="info-field">
+                <span class="info-label">Name:</span> <span class="info-value" id="driverName"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Email:</span> <span class="info-value" id="driverEmail"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Contact Number:</span> <span class="info-value" id="driverPhone"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Date Of Birth:</span> <span class="info-value" id="driverDateOfBirth"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">National Insurance Number:</span> <span class="info-value" id="driverNI"></span>
+            </div>
+
+            <div class="info-field" style="margin-top: 12pt;">
+                <span class="info-label">Have you ever been convicted of a felony?</span> <span class="info-value" id="felonyConviction">No</span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">If yes, explain?</span> <span class="info-value" id="felonyExplanation"></span>
+            </div>
+
+            <div class="info-field">
+                <span class="info-label">Place Of Birth:</span> <span class="info-value" id="placeOfBirth"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Contact Number:</span> <span class="info-value" id="contactNumber"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Mothers First Name:</span> <span class="info-value" id="mothersFirstName"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Mothers Maiden Name:</span> <span class="info-value" id="mothersMaidenName"></span>
+            </div>
+
+            <h2>Address History (7 Year History Required - Most Recent First)</h2>
+
+            <div class="address-section">
+                <div class="info-field">
+                    <span class="info-label">Address:</span> <span class="info-value" id="address1"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Town:</span> <span class="info-value" id="town1"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Post Code:</span> <span class="info-value" id="postcode1"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Years at address:</span> <span class="info-value" id="yearsAtAddress1"></span>
+                </div>
+            </div>
+
+            <div class="address-section">
+                <h3>Address 2:</h3>
+                <div class="info-field">
+                    <span class="info-label">Address:</span> <span class="info-value" id="address2"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Town:</span> <span class="info-value" id="town2"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Post Code:</span> <span class="info-value" id="postcode2"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Years at address:</span> <span class="info-value" id="yearsAtAddress2"></span>
+                </div>
+            </div>
+
+            <div class="address-section">
+                <h3>Address 3:</h3>
+                <div class="info-field">
+                    <span class="info-label">Address:</span> <span class="info-value" id="address3"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Town:</span> <span class="info-value" id="town3"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Post Code:</span> <span class="info-value" id="postcode3"></span>
+                </div>
+                <div class="info-field">
+                    <span class="info-label">Years at address:</span> <span class="info-value" id="yearsAtAddress3"></span>
+                </div>
+            </div>
+
+            <hr style="margin: 20pt 0; border: none; border-top: 1pt solid #000;">
+
+            <h2>Next of Kin</h2>
+
+            <div class="info-field">
+                <span class="info-label">Name:</span> <span class="info-value" id="nextOfKinName"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Address:</span> <span class="info-value" id="nextOfKinAddress"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Contact Number:</span> <span class="info-value" id="nextOfKinPhone"></span>
+            </div>
+            <div class="info-field">
+                <span class="info-label">Relationship:</span> <span class="info-value" id="nextOfKinRelationship"></span>
+            </div>
+
+            <div style="margin-top: 20pt; text-align: center;">
+                <div id="signatureArea" style="min-height: 50pt; border-bottom: 1pt solid #000; padding-bottom: 4pt; display: inline-block; min-width: 200pt;">
+                    <!-- Signature will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(8, 9);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const fullName = driverData.firstName && driverData.lastName 
+            ? `${driverData.firstName} ${driverData.lastName}` 
+            : (driverData.fullName || '');
+        
+        // Format date of birth
+        let formattedDOB = '';
+        if (driverData.dateOfBirth) {
+            const dob = new Date(driverData.dateOfBirth);
+            formattedDOB = dob.toLocaleDateString('en-GB');
+        }
+
+        document.getElementById('driverName').textContent = fullName;
+        document.getElementById('driverEmail').textContent = driverData.email || '';
+        document.getElementById('driverPhone').textContent = driverData.phone || '';
+        document.getElementById('driverDateOfBirth').textContent = formattedDOB;
+        document.getElementById('driverNI').textContent = driverData.nationalInsurance || '';
+        document.getElementById('felonyConviction').textContent = 'No'; // Default to No
+        document.getElementById('felonyExplanation').textContent = '';
+        document.getElementById('placeOfBirth').textContent = driverData.placeOfBirth || '';
+        document.getElementById('contactNumber').textContent = driverData.phone || '';
+        document.getElementById('mothersFirstName').textContent = driverData.mothersFirstName || '';
+        document.getElementById('mothersMaidenName').textContent = driverData.mothersMaidenName || '';
+
+        // Address 1 (current address)
+        document.getElementById('address1').textContent = driverData.addressLine1 || '';
+        document.getElementById('town1').textContent = driverData.town || '';
+        document.getElementById('postcode1').textContent = driverData.postcode || '';
+        document.getElementById('yearsAtAddress1').textContent = ''; // Not collected in step 1
+
+        // Address 2 and 3 - not collected in step 1, leave empty
+        document.getElementById('address2').textContent = '';
+        document.getElementById('town2').textContent = '';
+        document.getElementById('postcode2').textContent = '';
+        document.getElementById('yearsAtAddress2').textContent = '';
+        document.getElementById('address3').textContent = '';
+        document.getElementById('town3').textContent = '';
+        document.getElementById('postcode3').textContent = '';
+        document.getElementById('yearsAtAddress3').textContent = '';
+
+        // Next of Kin
+        document.getElementById('nextOfKinName').textContent = driverData.nextOfKinName || '';
+        document.getElementById('nextOfKinAddress').textContent = driverData.nextOfKinAddress || '';
+        document.getElementById('nextOfKinPhone').textContent = driverData.nextOfKinPhone || '';
+        document.getElementById('nextOfKinRelationship').textContent = driverData.nextOfKinRelationship || '';
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Driver\'s Information Pack...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '200pt';
+                sigImg.style.maxHeight = '60pt';
+                sigImg.style.display = 'block';
+                signatureArea.appendChild(sigImg);
+
+                // Ensure document is fully expanded before PDF generation
+                const documentElement = document.getElementById('driverInfoDocument');
+                documentElement.style.height = 'auto';
+                documentElement.style.maxHeight = 'none';
+                documentElement.style.overflow = 'visible';
+                documentElement.style.display = 'block';
+                
+                // Ensure parent container doesn't restrict height
+                if (documentElement.parentElement) {
+                    documentElement.parentElement.style.overflow = 'visible';
+                    documentElement.parentElement.style.height = 'auto';
+                }
+                
+                // Force multiple reflows to ensure all content is rendered
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll to bottom to ensure all content is loaded/rendered
+                window.scrollTo(0, documentElement.scrollHeight);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Force another reflow after scrolling
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll back to top for capture
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Final reflow
+                documentElement.offsetHeight;
+                
+                console.log('Step 8 - Document dimensions before PDF:', {
+                    scrollHeight: documentElement.scrollHeight,
+                    offsetHeight: documentElement.offsetHeight,
+                    clientHeight: documentElement.clientHeight,
+                    scrollWidth: documentElement.scrollWidth
+                });
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('driverInfoDocument');
+
+                // Submit to webhook
+                await api.submit('Driver\'s Information Pack', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to step 9 (Medical Fitness Declaration) after a short delay
+                setTimeout(() => {
+                    navigation.goToStep(9);
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Fitness Declaration - Step 9</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .medical-fitness-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+            min-height: auto;
+            height: auto;
+            overflow: visible;
+        }
+        .medical-fitness-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .medical-fitness-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .medical-fitness-document ul {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .medical-fitness-document li {
+            margin: 4pt 0;
+            list-style-type: disc;
+        }
+        .medical-fitness-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12pt 0;
+            font-size: 10pt;
+        }
+        .medical-fitness-document table td,
+        .medical-fitness-document table th {
+            padding: 6pt;
+            border: 1px solid #000;
+            text-align: left;
+            vertical-align: top;
+        }
+        .medical-fitness-document table th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .medical-fitness-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .medical-fitness-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .medical-fitness-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        /* Hide signature input section, submit button when generating PDF */
+        .medical-fitness-document.pdf-generation .signature-section,
+        .pdf-generation .signature-section {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .medical-fitness-document.pdf-generation #submitBtn,
+        .pdf-generation #submitBtn {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .medical-fitness-document.pdf-generation button,
+        .pdf-generation button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .medical-fitness-document.pdf-generation canvas#signaturePad,
+        .pdf-generation canvas#signaturePad {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        /* Ensure all content is visible in PDF */
+        .pdf-generation {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+        }
+        .medical-fitness-document.pdf-generation {
+            display: block !important;
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Medical Fitness Declaration Document -->
+        <div class="document-container medical-fitness-document" id="medicalFitnessDocument">
+            <h1>Medical Fitness Declaration</h1>
+
+            <p>Beecrown Logistics Ltd accepts it has a responsibility to ensure any contractor providing services on their behalf are medically fit to do so. Equally, every contractor wishing to provide services to Beecrown Logistics Ltd have a responsibility for their own health, safety and wellbeing. The provision of driving and multi-drop delivery services involves a significant amount of driving, manual handling of cages and parcels and delivery services. As a result, it is important that all contractors provide confirmation of their fitness to provide services below:</p>
+
+            <ul>
+                <li>I am physically fit and able to fulfil the demands of a multi-drop services</li>
+                <li>I am not taking any medication that will affect my ability to drive or provide services in a safe manner</li>
+                <li>I have no medical conditions that will affect my ability to drive or provide Services in a safe manner</li>
+                <li>I will comply with all health & safety guidelines at any sites I provide services at including safe driving and manual handling and will NOT place myself in danger by using unsafe practices</li>
+                <li>I have no mental or physical conditions that have not been reported to the DVLA which could affect my ability to drive</li>
+                <li>I will inform Beecrown Logistics Ltd if any of the above circumstances change or there are any changes which will affect my ability to provide services in the future</li>
+            </ul>
+
+            <p>I certify that the above information is true and that if any of my circumstances change that affect my health or my ability to safely provide my services, I will immediately inform Beecrown Logistics Ltd.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Signed</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="signatureArea" style="min-height: 50pt; vertical-align: top;">
+                            <!-- Signature will be inserted here -->
+                        </td>
+                        <td id="signatureName"></td>
+                        <td id="signatureDate"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(9, 10);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        // Construct full name from firstName and lastName
+        const fullName = driverData.firstName && driverData.lastName 
+            ? `${driverData.firstName} ${driverData.lastName}` 
+            : (driverData.fullName || '');
+        
+        document.getElementById('signatureName').textContent = fullName;
+        document.getElementById('signatureDate').textContent = today;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Medical Fitness Declaration...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '180pt';
+                sigImg.style.maxHeight = '50pt';
+                sigImg.style.display = 'block';
+                signatureArea.appendChild(sigImg);
+
+                // Ensure document is fully expanded before PDF generation
+                const documentElement = document.getElementById('medicalFitnessDocument');
+                documentElement.style.height = 'auto';
+                documentElement.style.maxHeight = 'none';
+                documentElement.style.overflow = 'visible';
+                documentElement.style.display = 'block';
+                
+                // Ensure parent container doesn't restrict height
+                if (documentElement.parentElement) {
+                    documentElement.parentElement.style.overflow = 'visible';
+                    documentElement.parentElement.style.height = 'auto';
+                }
+                
+                // Force multiple reflows to ensure all content is rendered
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll to bottom to ensure all content is loaded/rendered
+                window.scrollTo(0, documentElement.scrollHeight);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Force another reflow after scrolling
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll back to top for capture
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Final reflow
+                documentElement.offsetHeight;
+                
+                console.log('Step 9 - Document dimensions before PDF:', {
+                    scrollHeight: documentElement.scrollHeight,
+                    offsetHeight: documentElement.offsetHeight,
+                    clientHeight: documentElement.clientHeight,
+                    scrollWidth: documentElement.scrollWidth
+                });
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('medicalFitnessDocument');
+
+                // Submit to webhook
+                await api.submit('Medical Fitness Declaration', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to step 10 (Policy Handbook) after a short delay
+                setTimeout(() => {
+                    navigation.goToStep(10);
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+

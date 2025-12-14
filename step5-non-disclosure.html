@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Disclosure & Data Protection Agreements - Step 5</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .non-disclosure-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+            min-height: auto;
+            height: auto;
+            overflow: visible;
+        }
+        .non-disclosure-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .non-disclosure-document h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 15pt 0 8pt 0;
+        }
+        .non-disclosure-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .non-disclosure-document ul {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .non-disclosure-document li {
+            margin: 4pt 0;
+            list-style-type: disc;
+        }
+        .non-disclosure-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12pt 0;
+            font-size: 10pt;
+        }
+        .non-disclosure-document table td,
+        .non-disclosure-document table th {
+            padding: 6pt;
+            border: 1px solid #000;
+            text-align: left;
+            vertical-align: top;
+        }
+        .non-disclosure-document table th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .non-disclosure-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .non-disclosure-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .non-disclosure-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        /* Hide signature input section, submit button when generating PDF */
+        .non-disclosure-document.pdf-generation .signature-section,
+        .pdf-generation .signature-section {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .non-disclosure-document.pdf-generation #submitBtn,
+        .pdf-generation #submitBtn {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .non-disclosure-document.pdf-generation button,
+        .pdf-generation button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .non-disclosure-document.pdf-generation canvas#signaturePad,
+        .pdf-generation canvas#signaturePad {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        /* Ensure all content is visible in PDF */
+        .pdf-generation {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+        }
+        .non-disclosure-document.pdf-generation {
+            display: block !important;
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Non-Disclosure & Data Protection Agreements Document -->
+        <div class="document-container non-disclosure-document" id="nonDisclosureDocument">
+            <h1>Non-disclosure and Data Protection Agreements for contractors</h1>
+
+            <p>During the course your provision of services to Beecrown Logistics Ltd and their respective clients you will be invited to visit ours and client premises where you may receive information relating to both Beecrown Logistics Ltd and our clients that may not be known to the general public and is confidential and commercially important to us and our clients. This is referred to as "Confidential Information".</p>
+
+            <p>Confidential Information includes, but is not restricted to:</p>
+
+            <ul>
+                <li>The way we and our clients operate</li>
+                <li>The layout of our respective premises</li>
+                <li>as part of its random searching policy; or</li>
+                <li>The technology we and our clients use, including computers. applications and machinery.</li>
+                <li>That goods and products that form part of the services we and you provide</li>
+                <li>The people we work and interact with</li>
+                <li>The people and companies who deliver to us and collect from us</li>
+                <li>Details about our client customers, including their names, addresses and products they buy</li>
+                <li>Anything to do with finance</li>
+                <li>Anything to do with advertising or marketing</li>
+                <li>Anything that you hear</li>
+            </ul>
+
+            <p>Beecrown Logistics Ltd and our clients Confidential Information is very important to our business. It is vital that it does not become known to other companies and we will take the necessary legal steps to protect ours and our clients Confidential Information</p>
+
+            <p>As a service provider to Beecrown Logistics Ltd it is essential that you commit to the following:</p>
+
+            <ol>
+                <li>You will not disclose our Confidential Information to anyone or any company.</li>
+                <li>You will use our Confidential Information only to make up your mind about working with us.</li>
+                <li>You will notify us immediately if you discover that our Confidential Information has been disclosed, however it happens.</li>
+            </ol>
+
+            <hr style="margin: 20pt 0; border: none; border-top: 1pt solid #000;">
+
+            <ol start="4">
+                <li>All our Confidential Information will remain our property</li>
+                <li>You will not trade stocks or shares based on our Confidential Information.</li>
+                <li>You will return any materials containing our Confidential Information to us if we ask you to.</li>
+                <li>You also agree that you will not disclose information to us that is confidential to you or anyone else.</li>
+            </ol>
+
+            <p>I the undersigned, understand and agree to protect Beecrown Logistics Ltd (and their respective clients) Confidential Information. I agree that my agreement is also applicable for the benifit of any other Beecrown Logistics Ltd companies.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Signed</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="signatureArea" style="min-height: 50pt; vertical-align: top;">
+                            <!-- Signature will be inserted here -->
+                        </td>
+                        <td id="signatureName"></td>
+                        <td id="signatureDate"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(5, 8);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        // Construct full name from firstName and lastName
+        const fullName = driverData.firstName && driverData.lastName 
+            ? `${driverData.firstName} ${driverData.lastName}` 
+            : (driverData.fullName || '');
+        
+        document.getElementById('signatureName').textContent = fullName;
+        document.getElementById('signatureDate').textContent = today;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Non-Disclosure & Data Protection Agreements...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '180pt';
+                sigImg.style.maxHeight = '50pt';
+                sigImg.style.display = 'block';
+                signatureArea.appendChild(sigImg);
+
+                // Ensure document is fully expanded before PDF generation
+                const documentElement = document.getElementById('nonDisclosureDocument');
+                documentElement.style.height = 'auto';
+                documentElement.style.maxHeight = 'none';
+                documentElement.style.overflow = 'visible';
+                documentElement.style.display = 'block';
+                
+                // Ensure parent container doesn't restrict height
+                if (documentElement.parentElement) {
+                    documentElement.parentElement.style.overflow = 'visible';
+                    documentElement.parentElement.style.height = 'auto';
+                }
+                
+                // Force multiple reflows to ensure all content is rendered
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll to bottom to ensure all content is loaded/rendered
+                window.scrollTo(0, documentElement.scrollHeight);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Force another reflow after scrolling
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll back to top for capture
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Final reflow
+                documentElement.offsetHeight;
+                
+                console.log('Step 5 - Document dimensions before PDF:', {
+                    scrollHeight: documentElement.scrollHeight,
+                    offsetHeight: documentElement.offsetHeight,
+                    clientHeight: documentElement.clientHeight,
+                    scrollWidth: documentElement.scrollWidth
+                });
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('nonDisclosureDocument');
+
+                // Submit to webhook
+                await api.submit('Non-Disclosure & Data Protection Agreements', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to step 6 (Driving Licence Declaration) after a short delay
+                setTimeout(() => {
+                    navigation.goToStep(6);
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+
