@@ -297,17 +297,19 @@
         document.getElementById('address1').textContent = driverData.addressLine1 || '';
         document.getElementById('town1').textContent = driverData.town || '';
         document.getElementById('postcode1').textContent = driverData.postcode || '';
-        document.getElementById('yearsAtAddress1').textContent = ''; // Not collected in step 1
+        document.getElementById('yearsAtAddress1').textContent = driverData.yearsAtAddress1 || '';
 
-        // Address 2 and 3 - not collected in step 1, leave empty
-        document.getElementById('address2').textContent = '';
-        document.getElementById('town2').textContent = '';
-        document.getElementById('postcode2').textContent = '';
-        document.getElementById('yearsAtAddress2').textContent = '';
-        document.getElementById('address3').textContent = '';
-        document.getElementById('town3').textContent = '';
-        document.getElementById('postcode3').textContent = '';
-        document.getElementById('yearsAtAddress3').textContent = '';
+        // Address 2 (previous address 1)
+        document.getElementById('address2').textContent = driverData.address2 || '';
+        document.getElementById('town2').textContent = driverData.town2 || '';
+        document.getElementById('postcode2').textContent = driverData.postcode2 || '';
+        document.getElementById('yearsAtAddress2').textContent = driverData.yearsAtAddress2 || '';
+
+        // Address 3 (previous address 2)
+        document.getElementById('address3').textContent = driverData.address3 || '';
+        document.getElementById('town3').textContent = driverData.town3 || '';
+        document.getElementById('postcode3').textContent = driverData.postcode3 || '';
+        document.getElementById('yearsAtAddress3').textContent = driverData.yearsAtAddress3 || '';
 
         // Next of Kin
         document.getElementById('nextOfKinName').textContent = driverData.nextOfKinName || '';
