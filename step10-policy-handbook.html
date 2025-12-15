@@ -541,7 +541,7 @@
         // Wrap in IIFE to allow return statements
         (function() {
         // Update progress
-        progress.update(10, 10);
+        progress.update(10, 11);
 
         // Load driver data - must exist from step 1
         const driverData = storage.load();
@@ -653,9 +653,9 @@
                 ui.hideLoading();
                 ui.showStatus('Document submitted successfully!', 'success');
 
-                // Navigate to thank you page after a short delay
+                // Navigate to step 11 after a short delay
                 setTimeout(() => {
-                    navigation.goTo('thank-you');
+                    navigation.goToStep(11);
                 }, 1500);
             } catch (error) {
                 ui.hideLoading();

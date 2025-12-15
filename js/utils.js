@@ -21,7 +21,8 @@ const stepLabels = [
     'DVLA Share Your Driving Licence Scheme',
     'Driver\'s Information Pack',
     'Medical Fitness Declaration',
-    'Policy Handbook'
+    'Policy Handbook',
+    'Service Level Agreement'
 ];
 
 // Session Storage Management
@@ -71,6 +72,7 @@ const navigation = {
             8: 'step8-driver-info.html',
             9: 'step9-medical-fitness.html',
             10: 'step10-policy-handbook.html',
+            11: 'step11-sla.html',
             'thank-you': 'thank-you.html'
         };
         

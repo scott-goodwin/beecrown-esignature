@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Level Agreement - Step 11</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .sla-document {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20mm;
+            color: #000;
+            background: #fff;
+            min-height: auto;
+            height: auto;
+            overflow: visible;
+        }
+        .sla-document h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0 0 20pt 0;
+            text-align: center;
+        }
+        .sla-document h2 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 15pt 0 8pt 0;
+        }
+        .sla-document p {
+            margin: 8pt 0;
+            text-align: left;
+        }
+        .sla-document ol {
+            margin: 8pt 0 8pt 20pt;
+            padding-left: 0;
+        }
+        .sla-document ol li {
+            margin: 4pt 0;
+            list-style-type: decimal;
+        }
+        .sla-document table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12pt 0;
+            font-size: 9pt;
+        }
+        .sla-document table td,
+        .sla-document table th {
+            padding: 4pt;
+            border: 1px solid #000;
+            text-align: left;
+            vertical-align: top;
+        }
+        .sla-document table th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .sla-document hr {
+            margin: 15pt 0;
+            border: none;
+            border-top: 1pt solid #000;
+        }
+        .sla-document .signature-section {
+            margin-top: 25pt;
+            padding-top: 15pt;
+            border-top: 2px solid var(--beecrown-purple);
+        }
+        .sla-document #signatureArea {
+            min-height: 50pt;
+            padding: 4pt 0;
+        }
+        .sla-document #signatureArea img {
+            max-width: 180pt;
+            max-height: 50pt;
+            display: block;
+        }
+        /* Hide signature input section, submit button when generating PDF */
+        .sla-document.pdf-generation .signature-section,
+        .pdf-generation .signature-section {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .sla-document.pdf-generation #submitBtn,
+        .pdf-generation #submitBtn {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .sla-document.pdf-generation button,
+        .pdf-generation button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        .sla-document.pdf-generation canvas#signaturePad,
+        .pdf-generation canvas#signaturePad {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        /* Ensure all content is visible in PDF */
+        .pdf-generation {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: auto !important;
+        }
+        .sla-document.pdf-generation {
+            display: block !important;
+            position: relative !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="document-container progress-container">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- SLA Document -->
+        <div class="document-container sla-document" id="slaDocument">
+            <div style="text-align: center; margin-bottom: 20pt;">
+                <div style="font-size: 18pt; font-weight: bold; margin-bottom: 5pt;">Beecrown</div>
+                <div style="font-size: 14pt; font-weight: bold; margin-bottom: 5pt;">LOGISTICS LTD</div>
+                <div style="font-size: 10pt; margin-bottom: 15pt;">THE POWER OF DELIVERY</div>
+            </div>
+
+            <h1>Service Level Agreement – Sub-Contractors providing services to Beecrown Logistics Ltd</h1>
+
+            <table>
+                <tr>
+                    <th>Company</th>
+                    <th>Address</th>
+                </tr>
+                <tr>
+                    <td>Beecrown Logistics Ltd</td>
+                    <td>Hamill House, 112-116 Chorley New Road, Bolton, BL1 4DH</td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 10pt;">(hereafter referred to as "the Company")</p>
+
+            <p style="margin-top: 15pt;"><strong>And</strong></p>
+
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                </tr>
+                <tr>
+                    <td id="supplierName"></td>
+                    <td id="supplierAddress"></td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 10pt;">(Name &amp; Address - hereafter referred to as "the Supplier")</p>
+
+            <p style="margin-top: 15pt;">This Agreement is made on the date of the last signature below</p>
+
+            <p style="margin-top: 15pt;"><strong>Between:</strong></p>
+
+            <ol>
+                <li>Beecrown Logistics LTD a company incorporated in England and Wales with registered number 11440403 whose registered office is at Hamill House 112 - 116 Chorley New Road Bolton, BL1 4DH, We can deduct money if the van is hired from us (Beecrown Logistics LTD) this amount will be agreed before we hire out the van to you on a separate van hire agreement which would detail the terms and conditions.</li>
+                <li>All expenses such as fuel etc are included within the agreed Day rate unless authorised by senior management.</li>
+                <li>You are to understand the requirements of drivers hour's regulations and will ensure that appropriate rest periods are taken.</li>
+                <li>The vehicles are your responsibility and, the vehicles must always be locked if unattended to and the keys must never be left in the ignition.</li>
+                <li>Anyone who wishes to leave and stop providing their services must provide a formal 2 weeks' notice. If this has not been adhered to then we hold the right to delay, hold or keep the drivers' payments to cover costs incurred to find replacement.</li>
+                <li>A 50% route deduction will be made to any driver that does not show up to work.</li>
+            </ol>
+
+            <hr>
+
+            <ol start="7">
+                <li>Payments vary for each respective depots and will be paid accordingly matching to the pay dates that will be provided.</li>
+                <li>If you wish to seek redress for any complaints relating to your assignment then you should notify your immediate supervisor in writing, specifying the grounds for your complaint. If your complaint relates to your immediate supervisor, then you can instead notify the Owner of the business. Further information can be found in the complaints Procedure.</li>
+                <li>We hold the right to terminate this contract at any time if you have committed any offence in relation to the following: breaking the law, fraud, and failure to comply with this contract and company policies.</li>
+                <li>Any Damages to Rental vans will be charged at the excess amount on the vehicle.</li>
+                <li>The terms of payment vary depending on the specific contract for which services are rendered, ranging from payment in arrears spanning 2, 3, or 4 weeks. These terms are subject to agreement by your respective senior manager.</li>
+                <li>All Parcels are the driver's responsibility, Any Parcels that are lost and/or stolen due to driver negligence will be chargeable to the individual drivers.</li>
+            </ol>
+
+            <h2>Hours of Work</h2>
+
+            <ol start="13">
+                <li>Monies can be held for minimum 14 days or kept if there is damages, pcn's, accident or claims</li>
+                <li>You will be completing a route which can approximately take around 9 hours to complete however it could also be longer possibly around 10 hours depending on the area you are delivering in on the day</li>
+                <li>A mandatory rest period must be taken for 30 minutes during your route (this is an unpaid break)</li>
+                <li>You must provide reasonable service for additional hours to meet our business requirements without additional payment.</li>
+                <li>Monies can be held for minimum 14 days or kept if there is damages, pcn's, accident or claims</li>
+            </ol>
+
+            <p style="margin-top: 15pt;">All parcels must be delivered in accordance with the guidelines provided by the service partners. Any parcels that are not delivered within the rules and regulations may hold a fine and this will be charged to you. This includes scanners, delivering, parcels, damage, loss, theft and wrong/late deliveries.</p>
+
+            <p>All parcels scanned to the van are your responsibility until either delivered or returned to the depot for scan off. Whilst your responsibility, any stolen, damaged or missing parcels due to neglect will be charged back to you and payments held to cover any claim.</p>
+
+            <h2>Schedule 3 – Health &amp; Safety and Security Requirements</h2>
+
+            <ol>
+                <li>The Supplier confirms that to provide the services safely and legally, they can meet the following before the commencement of the services (and agrees the Company can provide such information to its End-user client):
+                    <ol type="a" style="margin-left: 20pt;">
+                        <li>is eligible to work in a self-employed capacity in the United Kingdom (per Government best practice requirements) and has registered with HM Revenue &amp; Customs as self-employed (and can provide evidence upon request);</li>
+                        <li>Is over 18 years of age;</li>
+                        <li>Can confirm current work status and reasons for leaving previous work for previous twenty-four (24) months</li>
+                        <li>passes a criminal background check, including but not limited to driving offences;</li>
+                    </ol>
+                </li>
+            </ol>
+
+            <ol start="5" style="margin-left: 20pt;">
+                <li>Confirmation that in providing services to the company, The Supplier will not be in breach of any other regulatory requirement;</li>
+                <li>Passes a Medical fitness for work check;</li>
+                <li>Passes a drug and alcohol screening test;</li>
+                <li>Holds a current and valid driving licence (either a UK licence or a European Community/European Economic Area (EC/EEA) license, but if the latter, they must hold a valid driving license counterpart for non-GB license holders (DELLA D9 form));</li>
+                <li>Has had no major preventable collisions within the previous three years;</li>
+                <li>Does not have more than 6 penalty points (endorsements) on their driving license;</li>
+                <li>Has not committed more than 3 driving-related offences of any kind in the last 4 years;</li>
+                <li>Does not currently have penalty points (endorsements) on their driving licence in relation to Offence Codes CD40, CD50, CD60, CD70, CD80, or CD90;</li>
+                <li>Does not currently have penalty points (endorsements) on their driving licence in relation to Offence Codes DD40, DD60, DD80, DD90;</li>
+                <li>Does not currently have penalty points (endorsements) on their driving licence in relation to Offence Codes DR10, DR20, DR30, DR40, DR50, DR60, DR70, DR80, DR90;</li>
+                <li>Does not currently have penalty points (endorsements) on their driving license in relation to Offence Codes IN10, MS50, TT99, or UT50;</li>
+                <li>Is not currently disqualified from driving (this includes having their license suspended);</li>
+                <li>Does not have any unspent convictions on their criminal record (driving-related or other).</li>
+                <li>Can speak fluent English, has a high level of written English skills, and passes appropriate numeracy tests.</li>
+                <li>Confirmation of whether the Supplier has previously ceased providing services to the Company or its End-user client for any reasons of unsuitability</li>
+            </ol>
+
+            <p style="margin-top: 15pt;">2. During the provision of the services, the Supplier agrees and consents that the Company may undertake ongoing checks at such intervals as it deems appropriate, with no further notice to the Supplier, of any or all of the conditions listed in Schedule 3 1(a) – (s) and may disclose this information to any End-user client the Supplier chooses to provide their services to.</p>
+
+            <h2>Declaration</h2>
+
+            <p>I understand the terms and conditions of this position and will abide by all rules and regulations and the contract content any breach may lead to termination as stated above.</p>
+
+            <p>I, the Independent Contractor, understand and accept in full the terms set out within this agreement.</p>
+
+            <table style="margin-top: 20pt;">
+                <tr>
+                    <th>Name:</th>
+                    <td id="contractorName"></td>
+                    <th>Date:</th>
+                    <td id="contractorDate"></td>
+                </tr>
+                <tr>
+                    <th>Position:</th>
+                    <td>Independent Contractor</td>
+                    <th>Signature:</th>
+                    <td id="signatureArea" style="min-height: 50pt; vertical-align: top;">
+                        <!-- Signature will be inserted here -->
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 20pt;">This agreement may only be varied by a document signed by Independent Contractor and Supplier</p>
+
+            <table style="margin-top: 15pt;">
+                <tr>
+                    <th>Name:</th>
+                    <td>Ghazalee Khan</td>
+                    <th>Date:</th>
+                    <td>As Per Signed Contractor Date</td>
+                </tr>
+                <tr>
+                    <th>Position:</th>
+                    <td>Director</td>
+                    <td colspan="2"></td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 15pt; text-align: center;"><strong>Beecrown Logistics Ltd ("The Company")</strong></p>
+
+            <!-- Signature Input Section (hidden in PDF) -->
+            <div class="signature-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--beecrown-purple);">
+                <h3 style="text-align: center; color: var(--beecrown-purple); margin-bottom: 1rem;">Your Signature</h3>
+                <p class="signature-instruction" style="text-align: center; margin-bottom: 1rem;">Please sign below using your mouse or touchscreen</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <button type="button" class="btn-secondary" onclick="clearSignature()">Clear Signature</button>
+                </div>
+                <canvas id="signaturePad" class="signature-pad"></canvas>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button type="button" class="btn btn-success" id="submitBtn" disabled>
+                    Sign and Continue
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Status -->
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/signature.js"></script>
+    <script>
+        // Wrap in IIFE to allow return statements
+        (function() {
+        // Update progress
+        progress.update(11, 11);
+
+        // Load driver data - must exist from step 1
+        const driverData = storage.load();
+        if (!driverData || !driverData.fullName) {
+            alert('Please complete Step 1 (Personal Information) first');
+            window.location.href = 'step1-personal.html';
+            return;
+        }
+
+        // Populate form fields with data from step 1
+        const today = new Date().toLocaleDateString('en-GB');
+        
+        // Construct full name from firstName and lastName
+        const fullName = driverData.firstName && driverData.lastName 
+            ? `${driverData.firstName} ${driverData.lastName}` 
+            : (driverData.fullName || '');
+        
+        // Construct address
+        let formattedAddress = driverData.addressLine1 || '';
+        if (driverData.town) formattedAddress += `, ${driverData.town}`;
+        if (driverData.postcode) formattedAddress += `, ${driverData.postcode}`;
+        
+        document.getElementById('supplierName').textContent = fullName;
+        document.getElementById('supplierAddress').textContent = formattedAddress;
+        document.getElementById('contractorName').textContent = fullName;
+        document.getElementById('contractorDate').textContent = today;
+
+        // Setup signature pad
+        let signaturePad;
+        try {
+            signaturePad = new SignaturePad('signaturePad', (hasSig) => {
+                document.getElementById('submitBtn').disabled = !hasSig;
+            });
+            console.log('Signature pad initialized successfully');
+        } catch (error) {
+            console.error('Error initializing signature pad:', error);
+        }
+
+        function clearSignature() {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        }
+
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            if (!signaturePad || signaturePad.isEmpty()) {
+                alert('Please sign the document before continuing');
+                return;
+            }
+
+            ui.showLoading('Submitting Service Level Agreement...');
+
+            try {
+                // Get signature as image
+                const signatureImage = signaturePad.toDataURL();
+                
+                // Insert signature into the document at the correct location (for PDF generation)
+                const signatureArea = document.getElementById('signatureArea');
+                signatureArea.innerHTML = '';
+                const sigImg = document.createElement('img');
+                sigImg.src = signatureImage;
+                sigImg.style.maxWidth = '180pt';
+                sigImg.style.maxHeight = '50pt';
+                sigImg.style.display = 'block';
+                signatureArea.appendChild(sigImg);
+
+                // Ensure document is fully expanded before PDF generation
+                const documentElement = document.getElementById('slaDocument');
+                documentElement.style.height = 'auto';
+                documentElement.style.maxHeight = 'none';
+                documentElement.style.overflow = 'visible';
+                documentElement.style.display = 'block';
+                
+                // Ensure parent container doesn't restrict height
+                if (documentElement.parentElement) {
+                    documentElement.parentElement.style.overflow = 'visible';
+                    documentElement.parentElement.style.height = 'auto';
+                }
+                
+                // Force multiple reflows to ensure all content is rendered
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll to bottom to ensure all content is loaded/rendered
+                window.scrollTo(0, documentElement.scrollHeight);
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Force another reflow after scrolling
+                documentElement.offsetHeight;
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Scroll back to top for capture
+                window.scrollTo(0, 0);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
+                // Final reflow
+                documentElement.offsetHeight;
+                
+                console.log('Step 11 - Document dimensions before PDF:', {
+                    scrollHeight: documentElement.scrollHeight,
+                    offsetHeight: documentElement.offsetHeight,
+                    clientHeight: documentElement.clientHeight,
+                    scrollWidth: documentElement.scrollWidth
+                });
+
+                // Generate PDF (will include the signature in the correct location)
+                const pdfBlob = await pdf.generate('slaDocument');
+
+                // Submit to webhook
+                await api.submit('Service Level Agreement', pdfBlob);
+
+                ui.hideLoading();
+                ui.showStatus('Document submitted successfully!', 'success');
+
+                // Navigate to thank you page after a short delay
+                setTimeout(() => {
+                    navigation.goTo('thank-you');
+                }, 1500);
+            } catch (error) {
+                ui.hideLoading();
+                ui.showStatus('Error submitting document: ' + error.message, 'error');
+                console.error('Submission error:', error);
+            }
+        });
+        })(); // End IIFE
+    </script>
+</body>
+</html>
+
