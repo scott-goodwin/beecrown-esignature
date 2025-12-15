@@ -348,11 +348,12 @@
             console.error('Error initializing signature pad:', error);
         }
 
-        function clearSignature() {
+        // Make clearSignature globally accessible
+        window.clearSignature = function() {
             if (signaturePad) {
                 signaturePad.clear();
             }
-        }
+        };
 
         // Submit handler
         document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -422,13 +423,8 @@
                 // Submit to webhook
                 await api.submit('Service Level Agreement', pdfBlob);
 
-                ui.hideLoading();
-                ui.showStatus('Document submitted successfully!', 'success');
-
-                // Navigate to thank you page after a short delay
-                setTimeout(() => {
-                    navigation.goTo('thank-you');
-                }, 1500);
+                // Navigate to thank you page - loading spinner will disappear on navigation
+                navigation.goTo('thank-you');
             } catch (error) {
                 ui.hideLoading();
                 ui.showStatus('Error submitting document: ' + error.message, 'error');

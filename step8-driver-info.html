@@ -328,11 +328,12 @@
             console.error('Error initializing signature pad:', error);
         }
 
-        function clearSignature() {
+        // Make clearSignature globally accessible
+        window.clearSignature = function() {
             if (signaturePad) {
                 signaturePad.clear();
             }
-        }
+        };
 
         // Submit handler
         document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -402,13 +403,8 @@
                 // Submit to webhook
                 await api.submit('Driver\'s Information Pack', pdfBlob);
 
-                ui.hideLoading();
-                ui.showStatus('Document submitted successfully!', 'success');
-
-                // Navigate to step 9 (Medical Fitness Declaration) after a short delay
-                setTimeout(() => {
-                    navigation.goToStep(9);
-                }, 1500);
+                // Navigate to step 9 (Medical Fitness Declaration) - loading spinner will disappear on navigation
+                navigation.goToStep(9);
             } catch (error) {
                 ui.hideLoading();
                 ui.showStatus('Error submitting document: ' + error.message, 'error');

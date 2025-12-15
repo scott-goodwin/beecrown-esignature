@@ -241,11 +241,12 @@
             console.error('Error initializing signature pad:', error);
         }
 
-        function clearSignature() {
+        // Make clearSignature globally accessible
+        window.clearSignature = function() {
             if (signaturePad) {
                 signaturePad.clear();
             }
-        }
+        };
 
         // Submit handler
         document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -315,13 +316,8 @@
                 // Submit to webhook
                 await api.submit('Driving Licence Declaration Form', pdfBlob);
 
-                ui.hideLoading();
-                ui.showStatus('Document submitted successfully!', 'success');
-
-                // Navigate to step 7 (DVLA Share Your Driving Licence Scheme) after a short delay
-                setTimeout(() => {
-                    navigation.goToStep(7);
-                }, 1500);
+                // Navigate to step 7 (DVLA Share Your Driving Licence Scheme) - loading spinner will disappear on navigation
+                navigation.goToStep(7);
             } catch (error) {
                 ui.hideLoading();
                 ui.showStatus('Error submitting document: ' + error.message, 'error');

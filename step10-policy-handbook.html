@@ -576,11 +576,12 @@
             console.error('Error initializing signature pad:', error);
         }
 
-        function clearSignature() {
+        // Make clearSignature globally accessible
+        window.clearSignature = function() {
             if (signaturePad) {
                 signaturePad.clear();
             }
-        }
+        };
 
         // Submit handler
         document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -650,13 +651,8 @@
                 // Submit to webhook
                 await api.submit('Policy Handbook', pdfBlob);
 
-                ui.hideLoading();
-                ui.showStatus('Document submitted successfully!', 'success');
-
-                // Navigate to step 11 after a short delay
-                setTimeout(() => {
-                    navigation.goToStep(11);
-                }, 1500);
+                // Navigate to step 11 - loading spinner will disappear on navigation
+                navigation.goToStep(11);
             } catch (error) {
                 ui.hideLoading();
                 ui.showStatus('Error submitting document: ' + error.message, 'error');
